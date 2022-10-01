@@ -1,11 +1,22 @@
 .scorebug-app {
   height: 5%;
   padding: 1%;
-  background-color: red;
+  background-color: black;
+  color: white;
 }
 
 .scorebug_match {
   font-size: 1.3em;
+}
+
+.home-color-red {
+  border-left: 1rem solid red;
+  border-right: 1rem solid yellow;
+}
+
+.home-color-yellow {
+  border-left: 1rem solid yellow;
+  border-right: 1rem solid red;
 }
 
 .scorebug_game {

@@ -1,12 +1,14 @@
-import { MatchInterface } from '../types';
+import { Match } from '../types';
 
 interface ScorebugProps {
-    match: MatchInterface;
+    match: Match;
 }
 
 export const Scorebug = (props: ScorebugProps) => {
-    const matchScore = props.match.score();
-    const game = props.match.getLiveGame();
+    const { match } = props;
+    const game = match.games.filter((game) => game.live)[0];
+    const homeColorClass = game.homeColour ? `home-color-${game.homeColour}` : '';
+
     return (
         <div className="scorebug">
             <div className="scorebug_match">
@@ -15,10 +17,10 @@ export const Scorebug = (props: ScorebugProps) => {
                 </div>
                 <div className='score'>
                     <div>
-                        {matchScore[0]}
+                        {match.homeScore}
                     </div>
                     <div>
-                        {matchScore[1]}
+                        {match.awayScore}
                     </div>
                 </div>
                 <div className="scorebug_match_team">
@@ -26,7 +28,7 @@ export const Scorebug = (props: ScorebugProps) => {
                 </div>
             </div>
             {game &&
-            <div className="scorebug_game">
+            <div className={`scorebug_game ${homeColorClass}`}>
                 <div className="scorebug_game_player">
                     {game.homePlayer}
                 </div>
