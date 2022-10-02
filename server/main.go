@@ -23,5 +23,7 @@ func main() {
 		MaxAge: 12 * time.Hour,
 	  }))
 	router.GET("/match", api.GetMatch)
+	router.POST("/match", api.SetMatch)
+	router.POST("/match/:liveGame", api.SetLiveGame)
 	router.Run()
 }
