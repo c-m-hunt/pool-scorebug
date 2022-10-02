@@ -45,7 +45,6 @@ export const Scorebug = (props: ScorebugProps) => {
                 </div>
             </div>            
             }
-
         </div>
     );
 }

@@ -4,7 +4,7 @@ import { Match } from "../types";
 
 
 
-const baseUrl = "http://localhost:8080/";
+const baseUrl = "http://localhost:8080";
 
 interface MatchServiceResponse extends ServiceResponse {
     match?: Match;
@@ -25,10 +25,9 @@ export const useMatchService = (): MatchServiceResponse => {
     const getMatch = async () => {
         setLoading(true);
         try {
-            const response = await fetch(`${baseUrl}match`);
-            const data = await response.json();
+            const [ data, status ] = await getApi(`match`);
             setMatch(data);
-            setStatus(response.status);
+            setStatus(status);
         } catch (err) {
             setError(err);
         } finally {
@@ -48,9 +47,9 @@ export const useMatchService = (): MatchServiceResponse => {
     };
 }
     
-const getApi = async (url: string) => {
+const getApi = async (url: string): Promise<[any, Number]> => {
   const response = await fetch(`${baseUrl}/${url}`);
-  return await response.json();
+  return [await response.json(), response.status];
 }
 
 const postApi = async (url: string, data: any) => {

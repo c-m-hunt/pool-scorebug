@@ -21,6 +21,9 @@
 
 .scorebug_game {
   font-size: 2em;
+  background: rgb(0,0,0);
+  background: linear-gradient(180deg, rgba(0,0,0,1) 0%, rgba(98,98,99,1) 29%, rgba(0,0,0,1) 100%);
+  padding: 0.5rem 0 0.5rem 0;
 }
 
 .scorebug_match div, .scorebug_game div {
@@ -34,6 +37,7 @@
 
 .scorebug_match .score div, .scorebug_game .score div {
   margin: 0 1rem 0 1rem;
+  font-weight: bold;
 }
 
 .scorebug_match .scorebug_match_team, .scorebug_game .scorebug_game_player {
