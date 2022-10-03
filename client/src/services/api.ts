@@ -1,8 +1,5 @@
-import userEvent from "@testing-library/user-event";
 import { useEffect, useState } from "react";
 import { Match } from "../types";
-
-
 
 const baseUrl = "http://localhost:8080";
 
@@ -37,6 +34,12 @@ export const useMatchService = (): MatchServiceResponse => {
 
     useEffect(() => {
         getMatch();
+        const interval = setInterval(() => {
+            getMatch();
+        }, 5000);
+        return () => {
+            clearInterval(interval);
+        }
     }, []);
 
     return {
