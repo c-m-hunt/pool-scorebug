@@ -6,8 +6,9 @@ interface ScorebugProps {
 
 export const Scorebug = (props: ScorebugProps) => {
     const { match } = props;
-    const game = match.games.filter((game) => game.live)[0];
-    const homeColorClass = game.homeColour ? `home-color-${game.homeColour}` : '';
+    const liveGames = match.games ? match.games.filter((game) => game.live) : [];
+    const liveGame = liveGames.length > 0 ? liveGames[0] : null;
+    const homeColorClass = liveGame && liveGame.homeColour ? `home-color-${liveGame.homeColour}` : '';
 
     return (
         <div className="scorebug">
@@ -27,21 +28,21 @@ export const Scorebug = (props: ScorebugProps) => {
                     {props.match.awayTeam}
                 </div>
             </div>
-            {game &&
+            {liveGame &&
             <div className={`scorebug_game ${homeColorClass}`}>
                 <div className="scorebug_game_player">
-                    {game.homePlayer}
+                    {liveGame.homePlayer}
                 </div>
                 <div className='score'>
                     <div>
-                        {game.homeScore}
+                        {liveGame.homeScore}
                     </div>
                     <div>
-                        {game.awayScore}
+                        {liveGame.awayScore}
                     </div>
                 </div>
                 <div className="scorebug_game_player">
-                    {game.awayPlayer}
+                    {liveGame.awayPlayer}
                 </div>
             </div>            
             }

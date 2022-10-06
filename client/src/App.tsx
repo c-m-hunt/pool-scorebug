@@ -6,12 +6,12 @@ import {
   Link
 } from "react-router-dom";
 import './App.css';
+import { Admin } from './components/Admin';
 import { Scorebug } from './components/Scorebug';
 import { useMatchService } from './services/api';
 
 
 const App = () => {
-
   return (
     <Router>
       <Routes>
@@ -30,7 +30,7 @@ const ScorebugWrapper = () => {
 }
 
 const AdminWrapper = () => {
-  return (<div>Admin</div>)
+  return (<Admin />)
 }
 
 export default App;

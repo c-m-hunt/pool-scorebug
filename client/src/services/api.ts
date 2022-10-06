@@ -5,6 +5,7 @@ const baseUrl = "http://localhost:8080";
 
 interface MatchServiceResponse extends ServiceResponse {
     match?: Match;
+    saveMatch?: (match: Match) => Promise<Match>;
 }
 
 interface ServiceResponse {
@@ -32,6 +33,20 @@ export const useMatchService = (): MatchServiceResponse => {
         }
     };
 
+    const saveMatch = async (match: Match) => {
+        setLoading(true);
+        try {
+            const [ data, status ] = await postApi(`match`, match);
+            setMatch(data);
+            setStatus(status);
+        } catch (err) {
+            setError(err);
+        } finally {
+            setLoading(false);
+        }
+        return match
+    };
+
     useEffect(() => {
         getMatch();
         const interval = setInterval(() => {
@@ -47,6 +62,7 @@ export const useMatchService = (): MatchServiceResponse => {
         status,
         loading,
         error,
+        saveMatch
     };
 }
     
