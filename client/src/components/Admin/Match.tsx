@@ -10,11 +10,13 @@ interface MatchProps {
 
 export const Match = (props: MatchProps) => {
 
+    const { match, saveMatch } = props;
+
     const [values, setValues] = useState({
-        homeTeam: props.match.homeTeam,
-        awayTeam: props.match.awayTeam,
-        homeScore: props.match.homeScore,
-        awayScore: props.match.awayScore,
+        homeTeam: match.homeTeam,
+        awayTeam: match.awayTeam,
+        homeScore: match.homeScore,
+        awayScore: match.awayScore,
     });
 
     const handleTeamChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -34,7 +36,7 @@ export const Match = (props: MatchProps) => {
     };
 
     useEffect(() => {
-        props.saveMatch({...props.match, ...values});
+        saveMatch({...match, ...values});
     }, [values]);
 
 
@@ -48,12 +50,12 @@ export const Match = (props: MatchProps) => {
                 </Col>
                 <Col xs={2}>
                     <Form.Group controlId="formHomeScore">
-                        <Form.Control type="number" placeholder="Home score" name="homeScore" value={values.homeScore} onChange={handleScoreChange} />
+                        <Form.Control type="number" placeholder="Home score" name="homeScore" value={values.homeScore || 0} onChange={handleScoreChange} />
                     </Form.Group>
                 </Col>
                 <Col xs={2}>
                     <Form.Group controlId="formAwayScore">
-                        <Form.Control type="number" placeholder="Away score" name="awayScore" value={values.awayScore} onChange={handleScoreChange} />
+                        <Form.Control type="number" placeholder="Away score" name="awayScore" value={values.awayScore || 0} onChange={handleScoreChange} />
                     </Form.Group>
                 </Col>
                 <Col xs={4}>
