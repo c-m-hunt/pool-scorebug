@@ -2,16 +2,21 @@ import { Button, Card } from 'react-bootstrap';
 import { useMatchService } from '../../services/api';
 import { Match } from './Match';
 import { Game } from './Game';
-import { Game as IGame } from './../../types';
+import { Game as IGame, Match as IMatch } from './../../types';
+import { useEffect, useState } from 'react';
 
 export const Admin = () => {
-    const { match, saveMatch: saveMatchToService, updateMatch, loading } = useMatchService()
+    const { match, saveMatch: saveMatchToService, loading } = useMatchService()
+    const [ matchState, setMatchState ] = useState(match)
+    const [ loaded, setLoaded ] = useState(false);
+    const [ unsavedChanges, setUnsavedChanges] = useState(false);
 
     const saveGame = (idx: number) => (game: IGame) => {
-        if (match && updateMatch) {
-            const games = [...match.games];
+        if (match) {
+            let games = [...match.games];
             games[idx] = game;
-            updateMatch({...match, games});
+            setMatchState({...match, games});
+            setUnsavedChanges(true);
         }
     };
     
@@ -25,16 +30,50 @@ export const Admin = () => {
                 awayScore: 0,
                 live: false,
             });
-            console.log(games)
-            updateMatch({...match, games});
+            setMatchState({...match, games});
+            setUnsavedChanges(true);
         }
     };
 
-    const saveMatch = () => {
+    const deleteGame = (idx: number) => () => {
         if (match) {
-            saveMatchToService(match);
+            const games = [...match.games];
+            games.splice(idx, 1);
+            setMatchState({...match, games});
+            setUnsavedChanges(true);
         }
+    }
+
+    const setGameLive = (idx: number) => (live: boolean) => {
+        if (match) {
+            let games = [...match.games];
+            games = games.map(g => {
+                g.live = false;
+                return g
+            })
+            games[idx].live = live;
+            setMatchState({...match, games});
+            setUnsavedChanges(true);
+        }
+    }
+
+    const saveMatchDetails = (matchToSave: IMatch) => {
+        setMatchState({...match, ...matchToSave})
+    }
+
+    const saveMatch = () => {
+        if (matchState) {
+            saveMatchToService({...match, ...matchState});
+        }
+        setUnsavedChanges(false);
     };
+
+    useEffect(() => {
+        if (match && !loaded) {
+            setLoaded(true)
+            setMatchState(match)
+        }
+    }, [match])
 
     return (
         <div className="admin">
@@ -46,12 +85,13 @@ export const Admin = () => {
                 {match && !loading && 
                     <>  
                         <h3>Match details</h3>
-                        <Match match={match} saveMatch={updateMatch} />
+                        <Match match={match} saveMatch={saveMatchDetails} />
                         {match && <Button variant="primary" size="sm" onClick={saveMatch}>Update match</Button>}
+                        {unsavedChanges && <p>Unsaved changes</p>}
                         <h3>Games</h3>
                         <Button variant="primary" size="sm" onClick={addGame}>Add Game</Button>
-                        {match.games && match.games.map((game, id) => {
-                            return <Game game={game} key={id} saveGame={saveGame(id)} /> 
+                        {matchState && matchState.games && matchState.games.map((game, id) => {
+                            return <Game game={game} key={id} saveGame={saveGame(id)} deleteGame={deleteGame(id)} setLive={setGameLive(id)} /> 
                         })}
                     </>
                 }

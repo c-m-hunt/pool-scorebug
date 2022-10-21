@@ -11,6 +11,8 @@ export interface Game {
     awayPlayer: string;
     homeScore: number;
     awayScore: number;
-    homeColour?: "red" | "yellow";
+    homeColour?: PlayingColour;
     live: boolean;
 }
+
+export type PlayingColour =  "red" | "yellow";

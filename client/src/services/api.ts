@@ -28,6 +28,7 @@ export const useMatchService = (refresh = 0): MatchServiceResponse => {
             setMatch(data);
             setStatus(status);
         } catch (err) {
+            console.error(err)
             setError(err);
         } finally {
             setLoading(false);
@@ -41,6 +42,7 @@ export const useMatchService = (refresh = 0): MatchServiceResponse => {
             setMatch(data);
             setStatus(status);
         } catch (err) {
+            console.error(err)
             setError(err);
         } finally {
             setLoading(false);
@@ -88,5 +90,5 @@ const postApi = async (url: string, data: any) => {
         },
         body: JSON.stringify(data),
     });
-    return await response.json();
+    return [await response.json(), response.status];
 }

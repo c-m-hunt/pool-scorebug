@@ -1,11 +1,13 @@
 import { useState, useEffect } from 'react';
 
 import { Form, Row, Col, Button } from 'react-bootstrap';
-import { Game as IGame } from '../../types';
+import { Game as IGame, PlayingColour } from '../../types';
 
 interface GameProps {
     game: IGame;
     saveGame: (game: IGame) => void;
+    deleteGame: () => void;
+    setLive: (live: boolean) => void;
 }
 
 export const Game = (props: GameProps) => {
@@ -16,27 +18,50 @@ export const Game = (props: GameProps) => {
         awayPlayer: game.awayPlayer,
         homeScore: game.homeScore,
         awayScore: game.awayScore,
+        homeColour: game.homeColour,
     });
 
     const handlePlayerChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = event.target;
-        setValues({
+        const newGame = {
+            ...props.game,
             ...values,
             [name]: value,
-        });
+        }
+        setValues(newGame);
     };
+
+    const setHomeColour = (colour: PlayingColour | undefined = undefined) => {
+        if (!colour) {
+            const newValues = {...values}
+            delete newValues.homeColour
+            setValues(newValues)
+        } else {
+            setValues({
+                ...values,
+                homeColour: colour
+            });    
+        }
+        
+    }
 
     const handleScoreChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = event.target;
-        setValues({
+        const newGame = {
+            ...props.game,
             ...values,
             [name]: parseInt(value),
-        });
+        }
+        setValues(newGame);
     };
 
     useEffect(() => {
-        props.saveGame({...props.game, ...values});
-    }, [values, props]);
+        const saveGame = {...props.game, ...values};
+        if (!values.homeColour) {
+            delete saveGame.homeColour;
+        }
+        props.saveGame(saveGame);
+    }, [values]);
 
     return (
         <Form>
@@ -64,8 +89,20 @@ export const Game = (props: GameProps) => {
             </Row>
             <Row className="mb-3">
                 <Col xs={4}>
-                    <Button variant="warning">Playing Yellow</Button>{' '}
-                    <Button variant="danger">Playing Red</Button>
+                    {!values.homeColour &&
+                        <>
+                        <Button variant="warning" onClick={() => setHomeColour("yellow")}>Playing Yellow</Button>{' '}
+                        <Button variant="danger" onClick={() => setHomeColour("red")}>Playing Red</Button> 
+                        </>               
+                    }
+                    {values.homeColour && <Button variant="default" onClick={() => setHomeColour()}>Remove Colour</Button>}
+                </Col>
+            </Row>
+            <Row className="mb-3">
+                <Col xs={4}>
+                    {!props.game.live && <Button variant='primary' onClick={() => props.setLive(true)}>Make Live</Button>}
+                    {props.game.live && <Button variant='primary' onClick={() => props.setLive(false)}>Remove Live</Button>}
+                    {' '}<Button variant='danger' onClick={() => props.deleteGame()}>Delete</Button>
                 </Col>
             </Row>
         </Form>
