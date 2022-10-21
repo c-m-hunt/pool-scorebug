@@ -10,7 +10,7 @@ interface MatchProps {
 
 export const Match = (props: MatchProps) => {
 
-    const { match, saveMatch } = props;
+    const { match } = props;
 
     const [values, setValues] = useState({
         homeTeam: match.homeTeam,
@@ -36,8 +36,8 @@ export const Match = (props: MatchProps) => {
     };
 
     useEffect(() => {
-        saveMatch({...match, ...values});
-    }, [values]);
+        props.saveMatch({...props.match, ...values});
+    }, [values, props]);
 
 
     return (

@@ -3,13 +3,11 @@ import {
   BrowserRouter as Router,
   Routes,
   Route,
-  Link
 } from "react-router-dom";
 import './App.css';
 import { Admin } from './components/Admin';
 import { Scorebug } from './components/Scorebug';
 import { useMatchService } from './services/api';
-
 
 const App = () => {
   return (
@@ -23,7 +21,7 @@ const App = () => {
 }
 
 const ScorebugWrapper = () => {
-  const match = useMatchService()
+  const match = useMatchService(5);
   return (<div className="scorebug-app">
     {match.match && <Scorebug match={match.match} />}
   </div>)

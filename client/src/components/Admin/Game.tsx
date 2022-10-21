@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 
-import { Form, Row, Col } from 'react-bootstrap';
+import { Form, Row, Col, Button } from 'react-bootstrap';
 import { Game as IGame } from '../../types';
 
 interface GameProps {
@@ -9,7 +9,7 @@ interface GameProps {
 }
 
 export const Game = (props: GameProps) => {
-    const { game, saveGame } = props;
+    const { game } = props;
     
     const [values, setValues] = useState({
         homePlayer: game.homePlayer,
@@ -35,8 +35,8 @@ export const Game = (props: GameProps) => {
     };
 
     useEffect(() => {
-        saveGame({...game, ...values});
-    }, [values]);
+        props.saveGame({...props.game, ...values});
+    }, [values, props]);
 
     return (
         <Form>
@@ -62,7 +62,12 @@ export const Game = (props: GameProps) => {
                     </Form.Group>
                 </Col>
             </Row>
-
+            <Row className="mb-3">
+                <Col xs={4}>
+                    <Button variant="warning">Playing Yellow</Button>{' '}
+                    <Button variant="danger">Playing Red</Button>
+                </Col>
+            </Row>
         </Form>
     );
 }
