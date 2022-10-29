@@ -1,24 +1,12 @@
-import userEvent from "@testing-library/user-event";
 import { useEffect, useState } from "react";
-import { Match, MatchInterface } from "../types";
+import { Match, Scorebug } from "../types";
 
-const matchTest = new Match(
-    'Outlaws',
-    'The Firm',
-  );
-  
-  matchTest.addGame({
-    homePlayer: 'Chris',
-    awayPlayer: 'John',
-    homeScore: 1,
-    awayScore: 1,
-    live: true,
-  });
+const baseUrl = "http://localhost:8080";
 
-const baseUrl = "https://localhost:3000/api";
-
-interface MatchServiceResponse extends ServiceResponse {
-    match?: MatchInterface;
+interface ScorebugServiceResponse extends ServiceResponse {
+    scorebug?: Scorebug;
+    saveScorebug: (scoerbug: Scorebug) => Promise<Scorebug>;
+    updateScorebug: (Scorebug: Scorebug) => void;
 }
 
 interface ServiceResponse {
@@ -27,42 +15,71 @@ interface ServiceResponse {
     error: any;
 }
 
-export const useMatchService = (): MatchServiceResponse => {
-    const [match, setMatch] = useState<MatchInterface | undefined>(undefined);
+export const useScorebugService = (refresh = 0): ScorebugServiceResponse => {
+    const [scorebug, setScorebug] = useState<Scorebug | undefined>(undefined);
     const [status, setStatus] = useState<Number> (200);
     const [loading, setLoading] = useState<Boolean>(false);
     const [error, setError] = useState<any>(null);
 
-    const getMatch = async () => {
+    const getScorebug = async () => {
         setLoading(true);
         try {
-            // const response = await fetch(`${baseUrl}/match`);
-            // const data = await response.json();
-            setMatch(matchTest as MatchInterface);
-            // setStatus(response.status);
-            setStatus(200);
+            const [ data, status ] = await getApi(`match`);
+            setScorebug(data);
+            setStatus(status);
         } catch (err) {
+            console.error(err)
             setError(err);
         } finally {
             setLoading(false);
         }
     };
 
+    const saveScorebug = async (scorebug: Scorebug) => {
+        setLoading(true);
+        try {
+            const [ data, status ] = await postApi(`match`, scorebug);
+            setScorebug(data);
+            setStatus(status);
+        } catch (err) {
+            console.error(err)
+            setError(err);
+        } finally {
+            setLoading(false);
+        }
+        return scorebug
+    };
+
+    const updateScorebug = (scorebug: Scorebug) => {
+        setScorebug(scorebug);
+    };
+    
     useEffect(() => {
-        getMatch();
-    }, []);
+        getScorebug();
+        if (refresh > 0) {
+            const interval = setInterval(() => {
+                getScorebug();
+            }, refresh * 1000);
+            return () => {
+                clearInterval(interval);
+            }
+        }   
+    }, [refresh]);
+
 
     return {
-        match,
+        scorebug,
         status,
         loading,
         error,
+        saveScorebug,
+        updateScorebug,
     };
 }
     
-const getApi = async (url: string) => {
+const getApi = async (url: string): Promise<[any, Number]> => {
   const response = await fetch(`${baseUrl}/${url}`);
-  return await response.json();
+  return [await response.json(), response.status];
 }
 
 const postApi = async (url: string, data: any) => {
@@ -73,5 +90,5 @@ const postApi = async (url: string, data: any) => {
         },
         body: JSON.stringify(data),
     });
-    return await response.json();
+    return [await response.json(), response.status];
 }

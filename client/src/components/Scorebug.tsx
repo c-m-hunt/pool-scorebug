@@ -1,49 +1,54 @@
-import { MatchInterface } from '../types';
+import { Match, Config } from '../types';
 
 interface ScorebugProps {
-    match: MatchInterface;
+    match: Match;
+    config: Config;
 }
 
 export const Scorebug = (props: ScorebugProps) => {
-    const matchScore = props.match.score();
-    const game = props.match.getLiveGame();
+    const { match, config } = props;
+    const liveGames = match.games ? match.games.filter((game) => game.live) : [];
+    const liveGame = liveGames.length > 0 ? liveGames[0] : null;
+    const homeColorClass = liveGame && liveGame.homeColour ? `home-color-${liveGame.homeColour}` : '';
+
     return (
         <div className="scorebug">
-            <div className="scorebug_match">
-                <div className="scorebug_match_team">
-                    {props.match.homeTeam}
+            {config.showTeamScore && (
+                <div className="scorebug_match">
+                    <div className="scorebug_match_team">
+                        {props.match.homeTeam}
+                    </div>
+                    <div className='score'>
+                        <div>
+                            {match.homeScore}
+                        </div>
+                        <div>
+                            {match.awayScore}
+                        </div>
+                    </div>
+                    <div className="scorebug_match_team">
+                        {props.match.awayTeam}
+                    </div>
+                </div>
+            )}
+            {liveGame &&
+            <div className={`scorebug_game ${homeColorClass}`}>
+                <div className="scorebug_game_player">
+                    {liveGame.homePlayer}
                 </div>
                 <div className='score'>
                     <div>
-                        {matchScore[0]}
+                        {liveGame.homeScore}
                     </div>
                     <div>
-                        {matchScore[1]}
-                    </div>
-                </div>
-                <div className="scorebug_match_team">
-                    {props.match.awayTeam}
-                </div>
-            </div>
-            {game &&
-            <div className="scorebug_game">
-                <div className="scorebug_game_player">
-                    {game.homePlayer}
-                </div>
-                <div className='score'>
-                    <div>
-                        {game.homeScore}
-                    </div>
-                    <div>
-                        {game.awayScore}
+                        {liveGame.awayScore}
                     </div>
                 </div>
                 <div className="scorebug_game_player">
-                    {game.awayPlayer}
+                    {liveGame.awayPlayer}
                 </div>
             </div>            
             }
-
         </div>
     );
 }
