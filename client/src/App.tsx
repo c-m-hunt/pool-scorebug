@@ -7,7 +7,7 @@ import {
 import './App.css';
 import { Admin } from './components/Admin';
 import { Scorebug } from './components/Scorebug';
-import { useMatchService } from './services/api';
+import { useScorebugService } from './services/api';
 
 const App = () => {
   return (
@@ -21,9 +21,9 @@ const App = () => {
 }
 
 const ScorebugWrapper = () => {
-  const match = useMatchService(5);
+  const { scorebug } = useScorebugService(5);
   return (<div className="scorebug-app">
-    {match.match && <Scorebug match={match.match} />}
+    {scorebug && <Scorebug match={scorebug.match} config={scorebug.config} />}
   </div>)
 }
 

@@ -1,12 +1,12 @@
 import { useEffect, useState } from "react";
-import { Match } from "../types";
+import { Match, Scorebug } from "../types";
 
 const baseUrl = "http://localhost:8080";
 
-interface MatchServiceResponse extends ServiceResponse {
-    match?: Match;
-    saveMatch: (match: Match) => Promise<Match>;
-    updateMatch: (match: Match) => void;
+interface ScorebugServiceResponse extends ServiceResponse {
+    scorebug?: Scorebug;
+    saveScorebug: (scoerbug: Scorebug) => Promise<Scorebug>;
+    updateScorebug: (Scorebug: Scorebug) => void;
 }
 
 interface ServiceResponse {
@@ -15,17 +15,17 @@ interface ServiceResponse {
     error: any;
 }
 
-export const useMatchService = (refresh = 0): MatchServiceResponse => {
-    const [match, setMatch] = useState<Match | undefined>(undefined);
+export const useScorebugService = (refresh = 0): ScorebugServiceResponse => {
+    const [scorebug, setScorebug] = useState<Scorebug | undefined>(undefined);
     const [status, setStatus] = useState<Number> (200);
     const [loading, setLoading] = useState<Boolean>(false);
     const [error, setError] = useState<any>(null);
 
-    const getMatch = async () => {
+    const getScorebug = async () => {
         setLoading(true);
         try {
             const [ data, status ] = await getApi(`match`);
-            setMatch(data);
+            setScorebug(data);
             setStatus(status);
         } catch (err) {
             console.error(err)
@@ -35,11 +35,11 @@ export const useMatchService = (refresh = 0): MatchServiceResponse => {
         }
     };
 
-    const saveMatch = async (match: Match) => {
+    const saveScorebug = async (scorebug: Scorebug) => {
         setLoading(true);
         try {
-            const [ data, status ] = await postApi(`match`, match);
-            setMatch(data);
+            const [ data, status ] = await postApi(`match`, scorebug);
+            setScorebug(data);
             setStatus(status);
         } catch (err) {
             console.error(err)
@@ -47,18 +47,18 @@ export const useMatchService = (refresh = 0): MatchServiceResponse => {
         } finally {
             setLoading(false);
         }
-        return match
+        return scorebug
     };
 
-    const updateMatch = (match: Match) => {
-        setMatch(match);
+    const updateScorebug = (scorebug: Scorebug) => {
+        setScorebug(scorebug);
     };
     
     useEffect(() => {
-        getMatch();
+        getScorebug();
         if (refresh > 0) {
             const interval = setInterval(() => {
-                getMatch();
+                getScorebug();
             }, refresh * 1000);
             return () => {
                 clearInterval(interval);
@@ -68,12 +68,12 @@ export const useMatchService = (refresh = 0): MatchServiceResponse => {
 
 
     return {
-        match,
+        scorebug,
         status,
         loading,
         error,
-        saveMatch,
-        updateMatch,
+        saveScorebug,
+        updateScorebug,
     };
 }
     

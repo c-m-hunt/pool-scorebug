@@ -8,6 +8,16 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+type Scorebug struct {
+	Match `json:"match"`
+	Config `json:"config"`
+}
+
+type Config struct {
+	ShowTeamScore bool `json:"showTeamScore"`
+	ShowPlayerScore bool `json:"showPlayerScore"`
+}
+
 type Match struct {
 	HomeTeam string `json:"homeTeam"`
 	AwayTeam string `json:"awayTeam"`
@@ -25,25 +35,32 @@ type Game struct {
 	HomeColur string `json:"homeColour"`
 }
 
-var match Match = Match{}
-
-func GetMatch(c *gin.Context) {
-	c.JSON(http.StatusOK, match)
+var scorebug Scorebug = Scorebug{
+	Config: Config{
+		ShowTeamScore: true,
+		ShowPlayerScore: true,
+	},
 }
 
-func SetMatch(c *gin.Context) {
-	m := Match{}
-	err:= c.BindJSON(&m)
+func GetScorebug(c *gin.Context) {
+	c.JSON(http.StatusOK, scorebug)
+}
+
+func SetScorebug(c *gin.Context) {
+	s := Scorebug{}
+	err:= c.BindJSON(&s)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
-	if err := m.Validate(); err != nil {
+	if err := s.Match.Validate(); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
-	match = m
-	c.JSON(http.StatusOK, match)
+
+	scorebug = s
+	
+	c.JSON(http.StatusOK, scorebug)
 }
 
 func SetLiveGame(c *gin.Context) {
@@ -53,7 +70,7 @@ func SetLiveGame(c *gin.Context) {
 		return
 	}
 	foundGame := false
-	for i, game := range match.Games {
+	for i, game := range scorebug.Match.Games {
 		if i == lg {
 			foundGame = true
 			game.Live = true
@@ -65,7 +82,7 @@ func SetLiveGame(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Game not found"})
 		return
 	}
-	c.JSON(http.StatusOK, match)
+	c.JSON(http.StatusOK, scorebug)
 }
 
 func (m Match) Validate() error {

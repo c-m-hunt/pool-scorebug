@@ -1,79 +1,105 @@
 import { Button, Card } from 'react-bootstrap';
-import { useMatchService } from '../../services/api';
+import { useScorebugService } from '../../services/api';
 import { Match } from './Match';
 import { Game } from './Game';
-import { Game as IGame, Match as IMatch } from './../../types';
+import { Config } from './Config';
+import { Game as IGame, Match as IMatch, Config as IConfig } from './../../types';
 import { useEffect, useState } from 'react';
+import { v4 as uuidv4 } from 'uuid';
 
 export const Admin = () => {
-    const { match, saveMatch: saveMatchToService, loading } = useMatchService()
-    const [ matchState, setMatchState ] = useState(match)
+    const { scorebug, saveScorebug: saveScorebugToService, loading } = useScorebugService()
+    const [ scorebugState, setScorebugState ] = useState(scorebug)
+    const [ games, setGames ] = useState({} as { [key: string]: IGame })
     const [ loaded, setLoaded ] = useState(false);
     const [ unsavedChanges, setUnsavedChanges] = useState(false);
 
-    const saveGame = (idx: number) => (game: IGame) => {
-        if (match) {
-            let games = [...match.games];
-            games[idx] = game;
-            setMatchState({...match, games});
+    const saveGame = (idx: string) => (game: IGame) => {
+        if (scorebugState) {
+            const updateGames  = games ? {...games} : {};
+            updateGames[idx] = game;
+            setGames(updateGames);
             setUnsavedChanges(true);
         }
     };
     
     const addGame = () => {
-        if (match) {
-            const games = match.games ? [...match.games] : [];
-            games.push({
+        if (scorebugState) {
+            const updateGames  = games ? {...games} : {};
+            updateGames[uuidv4()] = {
                 homePlayer: '',
                 awayPlayer: '',
                 homeScore: 0,
                 awayScore: 0,
                 live: false,
-            });
-            setMatchState({...match, games});
+            };
+            setGames(updateGames);
             setUnsavedChanges(true);
         }
     };
 
-    const deleteGame = (idx: number) => () => {
-        if (match) {
-            const games = [...match.games];
-            games.splice(idx, 1);
-            setMatchState({...match, games});
+    const deleteGame = (idx: string) => () => {
+        if (scorebugState) {
+            const updateGames  = {...games}
+            delete updateGames[idx]
+            setGames(updateGames)
             setUnsavedChanges(true);
         }
     }
 
-    const setGameLive = (idx: number) => (live: boolean) => {
-        if (match) {
-            let games = [...match.games];
-            games = games.map(g => {
-                g.live = false;
-                return g
+    const setGameLive = (idx: string) => (live: boolean) => {
+        if (scorebugState) {
+            const updateGames  = {...games}
+            Object.keys(updateGames).forEach(g => {
+                updateGames[g].live = false;
             })
-            games[idx].live = live;
-            setMatchState({...match, games});
+            updateGames[idx].live = live;
+            setGames(updateGames)
             setUnsavedChanges(true);
         }
     }
 
     const saveMatchDetails = (matchToSave: IMatch) => {
-        setMatchState({...match, ...matchToSave})
+        if (scorebugState) {
+            setScorebugState({...scorebugState, match: matchToSave})
+        }
     }
 
     const saveMatch = () => {
-        if (matchState) {
-            saveMatchToService({...match, ...matchState});
+        if (scorebugState) {
+            saveScorebugToService({
+                ...scorebugState, 
+                match: {
+                    ...scorebugState.match,
+                    games: Object.values(games)
+                } 
+            })
         }
         setUnsavedChanges(false);
     };
 
-    useEffect(() => {
-        if (match && !loaded) {
-            setLoaded(true)
-            setMatchState(match)
+    const saveConfig = (config: IConfig) => {
+        if (scorebugState) {
+            setScorebugState({...scorebugState, config: config})
         }
-    }, [match])
+    }
+
+    useEffect(() => {
+        if (scorebug && !loaded) {
+            setLoaded(true)
+            setScorebugState(scorebug)
+
+            if (scorebug.match.games) {
+                const { games } = scorebug.match;
+                let updateGames = {} as { [key: string]: IGame }
+                for (let i = 0; i < games.length; i++) {
+                    updateGames[uuidv4()] = games[i];
+                }
+                setGames(updateGames);
+            }
+
+        }
+    }, [scorebug])
 
     return (
         <div className="admin">
@@ -82,15 +108,16 @@ export const Admin = () => {
                     <Card.Title>Match</Card.Title>
                 </Card.Header>
                 <Card.Body>
-                {match && !loading && 
+                {scorebugState && !loading && 
                     <>  
+                        <h3>Config</h3>
+                        <Config config={scorebugState.config} saveConfig={saveConfig} />
                         <h3>Match details</h3>
-                        <Match match={match} saveMatch={saveMatchDetails} />
-                        {match && <Button variant="primary" size="sm" onClick={saveMatch}>Update match</Button>}
-                        {unsavedChanges && <p>Unsaved changes</p>}
+                        <Match match={scorebugState.match} saveMatch={saveMatchDetails} />
+                        <Button variant="primary" size="sm" onClick={saveMatch}>Update match</Button>
                         <h3>Games</h3>
                         <Button variant="primary" size="sm" onClick={addGame}>Add Game</Button>
-                        {matchState && matchState.games && matchState.games.map((game, id) => {
+                        {Object.entries(games).map(([id, game]) => {
                             return <Game game={game} key={id} saveGame={saveGame(id)} deleteGame={deleteGame(id)} setLive={setGameLive(id)} /> 
                         })}
                     </>

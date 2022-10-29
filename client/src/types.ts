@@ -1,3 +1,14 @@
+
+export interface Scorebug {
+    match: Match;
+    config: Config;
+}
+
+export interface Config {
+    showTeamScore: boolean;
+    showPlayerScore: boolean;
+}
+
 export interface Match {
     homeTeam: string;
     awayTeam: string;

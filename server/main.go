@@ -18,8 +18,8 @@ func main() {
 		ExposeHeaders:    []string{"Content-Length"},
 		MaxAge: 12 * time.Hour,
 	  }))
-	router.GET("/match", api.GetMatch)
-	router.POST("/match", api.SetMatch)
+	router.GET("/match", api.GetScorebug)
+	router.POST("/match", api.SetScorebug)
 	router.POST("/match/:liveGame", api.SetLiveGame)
 	router.Run()
 }
