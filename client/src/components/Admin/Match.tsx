@@ -17,28 +17,28 @@ export const Match = (props: MatchProps) => {
         awayTeam: match.awayTeam,
         homeScore: match.homeScore,
         awayScore: match.awayScore,
-    });
+    } as IMatch);
 
     const handleTeamChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = event.target;
-        setValues({
+        const newMatch = {
             ...values,
             [name]: value,
-        });
+        }
+        setValues(newMatch);
+        saveMatch(newMatch);
+
     };
 
     const handleScoreChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = event.target;
-        setValues({
+        const newMatch = {
             ...values,
             [name]: parseInt(value),
-        });
+        }
+        setValues(newMatch);
+        saveMatch(newMatch);
     };
-
-    useEffect(() => {
-        saveMatch({...match, ...values});
-    }, [values]);
-
 
     return (
         <Form>

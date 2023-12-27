@@ -32,7 +32,7 @@ export const Game = ({game, saveGame, deleteGame, setLive}: GameProps) => {
     const setHomeColour = (colour: PlayingColour | undefined = undefined) => {
         const newValues = {...values}
         if (!colour) {
-            delete newValues.homeColour
+            newValues.homeColour = undefined
             setValues(newValues)
         } else {
             newValues.homeColour = colour

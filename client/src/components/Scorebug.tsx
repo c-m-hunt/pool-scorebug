@@ -9,7 +9,7 @@ export const Scorebug = (props: ScorebugProps) => {
     const { match, config } = props;
     const liveGames = match.games ? match.games.filter((game) => game.live) : [];
     const liveGame = liveGames.length > 0 ? liveGames[0] : null;
-    const homeColorClass = liveGame && liveGame.homeColour ? `home-color-${liveGame.homeColour}` : '';
+    const homeColorClass = liveGame?.homeColour ? `home-color-${liveGame.homeColour}` : '';
 
     return (
         <div className="scorebug">

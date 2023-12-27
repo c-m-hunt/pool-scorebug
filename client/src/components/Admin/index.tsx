@@ -91,7 +91,7 @@ export const Admin = () => {
 
             if (scorebug.match.games) {
                 const { games } = scorebug.match;
-                let updateGames = {} as { [key: string]: IGame }
+                const updateGames = {} as { [key: string]: IGame }
                 for (let i = 0; i < games.length; i++) {
                     updateGames[uuidv4()] = games[i];
                 }

@@ -10,21 +10,21 @@ interface ScorebugServiceResponse extends ServiceResponse {
 }
 
 interface ServiceResponse {
-    status: Number;
-    loading: Boolean;
+    status: number;
+    loading: boolean;
     error: any;
 }
 
 export const useScorebugService = (refresh = 0): ScorebugServiceResponse => {
     const [scorebug, setScorebug] = useState<Scorebug | undefined>(undefined);
-    const [status, setStatus] = useState<Number> (200);
-    const [loading, setLoading] = useState<Boolean>(false);
+    const [status, setStatus] = useState<number> (200);
+    const [loading, setLoading] = useState<boolean>(false);
     const [error, setError] = useState<any>(null);
 
     const getScorebug = async () => {
         setLoading(true);
         try {
-            const [ data, status ] = await getApi(`match`);
+            const [ data, status ] = await getApi("match");
             setScorebug(data);
             setStatus(status);
         } catch (err) {
@@ -38,7 +38,7 @@ export const useScorebugService = (refresh = 0): ScorebugServiceResponse => {
     const saveScorebug = async (scorebug: Scorebug) => {
         setLoading(true);
         try {
-            const [ data, status ] = await postApi(`match`, scorebug);
+            const [ data, status ] = await postApi("match", scorebug);
             setScorebug(data);
             setStatus(status);
         } catch (err) {
@@ -77,7 +77,7 @@ export const useScorebugService = (refresh = 0): ScorebugServiceResponse => {
     };
 }
     
-const getApi = async (url: string): Promise<[any, Number]> => {
+const getApi = async (url: string): Promise<[any, number]> => {
   const response = await fetch(`${baseUrl}/${url}`);
   return [await response.json(), response.status];
 }
