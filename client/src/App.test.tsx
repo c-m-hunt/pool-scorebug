@@ -31,7 +31,7 @@ test('renders test match', () => {
   expect(linkElement).toBeInTheDocument();
 });
 
-test('renders test match', () => {
+test('renders test match with team', () => {
   const configTest2 = {showPlayerScore: true, showTeamScore: false}
   render(<Scorebug match={matchTest} config={configTest2} />);
   const linkElement = screen.queryByText(/Home Team/i);

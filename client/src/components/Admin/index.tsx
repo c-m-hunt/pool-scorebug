@@ -71,7 +71,7 @@ export const Admin = () => {
                 ...scorebugState, 
                 match: {
                     ...scorebugState.match,
-                    games: Object.values(games)
+                    games: Object.values({...games})
                 } 
             })
         }
@@ -97,9 +97,12 @@ export const Admin = () => {
                 }
                 setGames(updateGames);
             }
-
         }
-    }, [scorebug])
+    }, [loaded, scorebug])
+
+    useEffect(() => {
+        console.debug('unsavedChanges', unsavedChanges)
+    }, [unsavedChanges])
 
     return (
         <div className="admin">
@@ -114,12 +117,15 @@ export const Admin = () => {
                         <Config config={scorebugState.config} saveConfig={saveConfig} />
                         <h3>Match details</h3>
                         <Match match={scorebugState.match} saveMatch={saveMatchDetails} />
-                        <Button variant="primary" size="sm" onClick={saveMatch}>Update match</Button>
+                        
                         <h3>Games</h3>
                         <Button variant="primary" size="sm" onClick={addGame}>Add Game</Button>
                         {Object.entries(games).map(([id, game]) => {
                             return <Game game={game} key={id} saveGame={saveGame(id)} deleteGame={deleteGame(id)} setLive={setGameLive(id)} /> 
                         })}
+                        <hr />
+                        {<Button variant="primary" size="sm" disabled={!unsavedChanges} onClick={saveMatch}>Update match</Button>}
+                        
                     </>
                 }
                 </Card.Body>

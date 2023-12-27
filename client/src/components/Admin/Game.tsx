@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 
 import { Form, Row, Col, Button } from 'react-bootstrap';
 import { Game as IGame, PlayingColour } from '../../types';
@@ -10,58 +10,54 @@ interface GameProps {
     setLive: (live: boolean) => void;
 }
 
-export const Game = (props: GameProps) => {
-    const { game } = props;
-    
+export const Game = ({game, saveGame, deleteGame, setLive}: GameProps) => {
     const [values, setValues] = useState({
-        homePlayer: game.homePlayer,
-        awayPlayer: game.awayPlayer,
-        homeScore: game.homeScore,
-        awayScore: game.awayScore,
-        homeColour: game.homeColour,
-    });
+        homePlayer: "",
+        awayPlayer: "",
+        homeScore: 0,
+        awayScore: 0,
+        homeColour: undefined,
+    } as IGame);
 
     const handlePlayerChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = event.target;
         const newGame = {
-            ...props.game,
             ...values,
             [name]: value,
         }
         setValues(newGame);
+        saveGame(newGame);
     };
 
     const setHomeColour = (colour: PlayingColour | undefined = undefined) => {
+        const newValues = {...values}
         if (!colour) {
-            const newValues = {...values}
             delete newValues.homeColour
             setValues(newValues)
         } else {
-            setValues({
-                ...values,
-                homeColour: colour
-            });    
+            newValues.homeColour = colour
+            setValues(newValues);    
         }
-        
+        saveGame(newValues);
     }
 
     const handleScoreChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = event.target;
         const newGame = {
-            ...props.game,
             ...values,
             [name]: parseInt(value),
         }
         setValues(newGame);
+        saveGame(newGame);
     };
 
+    const isFirstRender= useRef(true)
     useEffect(() => {
-        const saveGame = {...props.game, ...values};
-        if (!values.homeColour) {
-            delete saveGame.homeColour;
+        if(isFirstRender.current){
+          setValues({...game})
+          isFirstRender.current=false
         }
-        props.saveGame(saveGame);
-    }, [values]);
+    }, [game]);
 
     return (
         <Form>
@@ -100,9 +96,9 @@ export const Game = (props: GameProps) => {
             </Row>
             <Row className="mb-3">
                 <Col xs={4}>
-                    {!props.game.live && <Button variant='primary' onClick={() => props.setLive(true)}>Make Live</Button>}
-                    {props.game.live && <Button variant='primary' onClick={() => props.setLive(false)}>Remove Live</Button>}
-                    {' '}<Button variant='danger' onClick={() => props.deleteGame()}>Delete</Button>
+                    {!game.live && <Button variant='primary' onClick={() => setLive(true)}>Make Live</Button>}
+                    {game.live && <Button variant='primary' onClick={() => setLive(false)}>Remove Live</Button>}
+                    {' '}<Button variant='danger' onClick={() => deleteGame()}>Delete</Button>
                 </Col>
             </Row>
         </Form>
