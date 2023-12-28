@@ -1,3 +1,5 @@
+import "./Admin.css";
+
 import { useEffect, useState } from "react";
 import { Button, Card } from "react-bootstrap";
 import { v4 as uuidv4 } from "uuid";
@@ -124,26 +126,64 @@ export const Admin = () => {
 				<Card.Body>
 					{scorebugState && !loading && (
 						<>
-							<h3>Config</h3>
-							<Config config={scorebugState.config} saveConfig={saveConfig} />
-							<h3>Match details</h3>
-							<Match match={scorebugState.match} saveMatch={saveMatchDetails} />
-
-							<h3>Games</h3>
-							<Button variant="primary" size="sm" onClick={addGame}>
-								Add Game
-							</Button>
-							{Object.entries(games).map(([id, game]) => {
-								return (
-									<Game
-										game={game}
-										key={id}
-										saveGame={saveGame(id)}
-										deleteGame={deleteGame(id)}
-										setLive={setGameLive(id)}
+							<Card>
+								<Card.Header>
+									<Card.Title>Config</Card.Title>
+								</Card.Header>
+								<Card.Body>
+									<Config
+										config={scorebugState.config}
+										saveConfig={saveConfig}
 									/>
-								);
-							})}
+								</Card.Body>
+							</Card>
+							<Card>
+								<Card.Header>
+									<Card.Title>Match details</Card.Title>
+								</Card.Header>
+								<Card.Body>
+									<Match
+										match={scorebugState.match}
+										saveMatch={saveMatchDetails}
+									/>
+								</Card.Body>
+							</Card>
+
+							<Card>
+								<Card.Header>
+									<Card.Title>
+										Games
+										<div
+											style={{
+												display: "inline",
+												width: "100%",
+												backgroundColor: "red",
+											}}
+										>
+											<Button variant="primary" size="sm" onClick={addGame}>
+												Add Game
+											</Button>
+										</div>
+									</Card.Title>
+								</Card.Header>
+								<Card.Body>
+									{Object.entries(games).map(([id, game]) => {
+										return (
+											<Card className={game.live ? "active-game" : ""}>
+												<Card.Body>
+													<Game
+														game={game}
+														key={id}
+														saveGame={saveGame(id)}
+														deleteGame={deleteGame(id)}
+														setLive={setGameLive(id)}
+													/>
+												</Card.Body>
+											</Card>
+										);
+									})}
+								</Card.Body>
+							</Card>
 						</>
 					)}
 				</Card.Body>

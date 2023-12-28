@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useState } from "react";
 
 import { Button, Col, Form, Row } from "react-bootstrap";
 import { Game as IGame, PlayingColour } from "../../types";

@@ -21,7 +21,6 @@ export const Config = (props: ConfigProps) => {
 			<Row className="mb-3">
 				<Col xs={4}>
 					<Form.Group controlId="formShowTeamScore">
-						<Form.Label>Show team score</Form.Label>
 						<Form.Check
 							type="checkbox"
 							label="Show team score"
