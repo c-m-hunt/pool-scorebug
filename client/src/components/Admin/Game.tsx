@@ -20,6 +20,15 @@ export const Game = ({ game, saveGame, deleteGame, setLive }: GameProps) => {
 			[name]: value,
 		};
 		setValues(newGame);
+	};
+
+	const handlePlayerBlur = (event: React.FocusEvent<HTMLInputElement>) => {
+		const { name, value } = event.target;
+		const newGame = {
+			...values,
+			[name]: value,
+		};
+		setValues(newGame);
 		saveGame(newGame);
 	};
 
@@ -45,13 +54,12 @@ export const Game = ({ game, saveGame, deleteGame, setLive }: GameProps) => {
 		saveGame(newGame);
 	};
 
-	const isFirstRender = useRef(true);
-	useEffect(() => {
-		if (isFirstRender.current) {
-			setValues({ ...game });
-			isFirstRender.current = false;
+	const awayColour = (homeColour: string | undefined) => {
+		if (homeColour === undefined) {
+			return "";
 		}
-	}, [game]);
+		return homeColour === "red" ? "yellow" : "red";
+	};
 
 	return (
 		<Form>
@@ -64,6 +72,7 @@ export const Game = ({ game, saveGame, deleteGame, setLive }: GameProps) => {
 							value={values.homePlayer}
 							name="homePlayer"
 							onChange={handlePlayerChange}
+							onBlur={handlePlayerBlur}
 						/>
 					</Form.Group>
 				</Col>
@@ -74,6 +83,7 @@ export const Game = ({ game, saveGame, deleteGame, setLive }: GameProps) => {
 							placeholder="Home score"
 							value={values.homeScore || 0}
 							name="homeScore"
+							style={{ backgroundColor: values.homeColour }}
 							onChange={handleScoreChange}
 						/>
 					</Form.Group>
@@ -85,6 +95,7 @@ export const Game = ({ game, saveGame, deleteGame, setLive }: GameProps) => {
 							placeholder="Away score"
 							value={values.awayScore || 0}
 							name="awayScore"
+							style={{ backgroundColor: awayColour(values.homeColour) }}
 							onChange={handleScoreChange}
 						/>
 					</Form.Group>
@@ -97,6 +108,7 @@ export const Game = ({ game, saveGame, deleteGame, setLive }: GameProps) => {
 							value={values.awayPlayer}
 							name="awayPlayer"
 							onChange={handlePlayerChange}
+							onBlur={handlePlayerBlur}
 						/>
 					</Form.Group>
 				</Col>

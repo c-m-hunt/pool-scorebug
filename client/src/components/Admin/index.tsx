@@ -73,19 +73,6 @@ export const Admin = () => {
 		}
 	};
 
-	const saveMatch = () => {
-		if (scorebugState) {
-			saveScorebugToService({
-				...scorebugState,
-				match: {
-					...scorebugState.match,
-					games: Object.values({ ...games }),
-				},
-			});
-		}
-		setUnsavedChanges(false);
-	};
-
 	const saveConfig = (config: IConfig) => {
 		if (scorebugState) {
 			setScorebugState({ ...scorebugState, config: config });
@@ -108,6 +95,25 @@ export const Admin = () => {
 			}
 		}
 	}, [loaded, scorebug]);
+
+	useEffect(() => {
+		if (unsavedChanges) {
+			const saveMatch = () => {
+				if (scorebugState) {
+					saveScorebugToService({
+						...scorebugState,
+						match: {
+							...scorebugState.match,
+							games: Object.values({ ...games }),
+						},
+					});
+				}
+				setUnsavedChanges(false);
+			};
+
+			saveMatch();
+		}
+	}, [unsavedChanges, games, scorebugState, saveScorebugToService]);
 
 	return (
 		<div className="admin">
@@ -138,17 +144,6 @@ export const Admin = () => {
 									/>
 								);
 							})}
-							<hr />
-							{
-								<Button
-									variant="primary"
-									size="sm"
-									disabled={!unsavedChanges}
-									onClick={saveMatch}
-								>
-									Update match
-								</Button>
-							}
 						</>
 					)}
 				</Card.Body>
