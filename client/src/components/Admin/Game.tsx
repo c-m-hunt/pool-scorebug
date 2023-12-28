@@ -13,22 +13,22 @@ interface GameProps {
 export const Game = ({ game, saveGame, deleteGame, setLive }: GameProps) => {
 	const [values, setValues] = useState({ ...game });
 
-	const handlePlayerChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+	const getNewGame = (event: React.ChangeEvent<HTMLInputElement>): IGame => {
 		const { name, value } = event.target;
 		const newGame = {
 			...values,
 			[name]: value,
 		};
 		setValues(newGame);
+		return newGame;
+	};
+
+	const handlePlayerChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+		getNewGame(event);
 	};
 
 	const handlePlayerBlur = (event: React.FocusEvent<HTMLInputElement>) => {
-		const { name, value } = event.target;
-		const newGame = {
-			...values,
-			[name]: value,
-		};
-		setValues(newGame);
+		const newGame = getNewGame(event);
 		saveGame(newGame);
 	};
 
@@ -44,14 +44,25 @@ export const Game = ({ game, saveGame, deleteGame, setLive }: GameProps) => {
 		saveGame(newValues);
 	};
 
-	const handleScoreChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+	const getNewGameScore = (
+		event: React.ChangeEvent<HTMLInputElement>,
+	): IGame => {
 		const { name, value } = event.target;
 		const newGame = {
 			...values,
 			[name]: parseInt(value),
 		};
 		setValues(newGame);
+		return newGame;
+	};
+
+	const handleScoreBlur = (event: React.FocusEvent<HTMLInputElement>) => {
+		const newGame = getNewGameScore(event);
 		saveGame(newGame);
+	};
+
+	const handleScoreChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+		getNewGameScore(event);
 	};
 
 	const awayColour = (homeColour: string | undefined) => {
@@ -85,6 +96,7 @@ export const Game = ({ game, saveGame, deleteGame, setLive }: GameProps) => {
 							name="homeScore"
 							style={{ backgroundColor: values.homeColour }}
 							onChange={handleScoreChange}
+							onBlur={handleScoreBlur}
 						/>
 					</Form.Group>
 				</Col>
@@ -97,6 +109,7 @@ export const Game = ({ game, saveGame, deleteGame, setLive }: GameProps) => {
 							name="awayScore"
 							style={{ backgroundColor: awayColour(values.homeColour) }}
 							onChange={handleScoreChange}
+							onBlur={handleScoreBlur}
 						/>
 					</Form.Group>
 				</Col>
