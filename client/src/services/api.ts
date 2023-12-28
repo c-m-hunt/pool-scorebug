@@ -12,28 +12,14 @@ interface ScorebugServiceResponse extends ServiceResponse {
 interface ServiceResponse {
 	status: number;
 	loading: boolean;
-	error: any;
+	error: Error | null;
 }
 
 export const useScorebugService = (refresh = 0): ScorebugServiceResponse => {
 	const [scorebug, setScorebug] = useState<Scorebug | undefined>(undefined);
 	const [status, setStatus] = useState<number>(200);
 	const [loading, setLoading] = useState<boolean>(false);
-	const [error, setError] = useState<any>(null);
-
-	const getScorebug = async () => {
-		setLoading(true);
-		try {
-			const [data, status] = await getApi("match");
-			setScorebug(data);
-			setStatus(status);
-		} catch (err) {
-			console.error(err);
-			setError(err);
-		} finally {
-			setLoading(false);
-		}
-	};
+	const [error, setError] = useState<Error | null>(null);
 
 	const saveScorebug = async (scorebug: Scorebug) => {
 		setLoading(true);
@@ -43,7 +29,7 @@ export const useScorebugService = (refresh = 0): ScorebugServiceResponse => {
 			setStatus(status);
 		} catch (err) {
 			console.error(err);
-			setError(err);
+			setError(err as Error);
 		} finally {
 			setLoading(false);
 		}
@@ -55,6 +41,19 @@ export const useScorebugService = (refresh = 0): ScorebugServiceResponse => {
 	};
 
 	useEffect(() => {
+		const getScorebug = async () => {
+			setLoading(true);
+			try {
+				const [data, status] = await getApi("match");
+				setScorebug(data);
+				setStatus(status);
+			} catch (err) {
+				console.error(err);
+				setError(err as Error);
+			} finally {
+				setLoading(false);
+			}
+		};
 		getScorebug();
 		if (refresh > 0) {
 			const interval = setInterval(() => {
@@ -76,12 +75,12 @@ export const useScorebugService = (refresh = 0): ScorebugServiceResponse => {
 	};
 };
 
-const getApi = async (url: string): Promise<[any, number]> => {
+const getApi = async (url: string): Promise<[Scorebug, number]> => {
 	const response = await fetch(`${baseUrl}/${url}`);
 	return [await response.json(), response.status];
 };
 
-const postApi = async (url: string, data: any) => {
+const postApi = async (url: string, data: Scorebug) => {
 	const response = await fetch(`${baseUrl}/${url}`, {
 		method: "POST",
 		headers: {

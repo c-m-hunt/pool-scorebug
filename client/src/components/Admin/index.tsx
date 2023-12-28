@@ -58,9 +58,9 @@ export const Admin = () => {
 	const setGameLive = (idx: string) => (live: boolean) => {
 		if (scorebugState) {
 			const updateGames = { ...games };
-			Object.keys(updateGames).forEach((g) => {
+			for (const g in updateGames) {
 				updateGames[g].live = false;
-			});
+			}
 			updateGames[idx].live = live;
 			setGames(updateGames);
 			setUnsavedChanges(true);

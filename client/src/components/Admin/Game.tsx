@@ -11,13 +11,7 @@ interface GameProps {
 }
 
 export const Game = ({ game, saveGame, deleteGame, setLive }: GameProps) => {
-	const [values, setValues] = useState({
-		homePlayer: "",
-		awayPlayer: "",
-		homeScore: 0,
-		awayScore: 0,
-		homeColour: undefined,
-	} as IGame);
+	const [values, setValues] = useState({ ...game });
 
 	const handlePlayerChange = (event: React.ChangeEvent<HTMLInputElement>) => {
 		const { name, value } = event.target;
