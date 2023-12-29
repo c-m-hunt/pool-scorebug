@@ -84,6 +84,7 @@ export const Admin = () => {
 
 	useEffect(() => {
 		if (scorebug && !loaded) {
+			console.debug("Scorebug loaded");
 			setLoaded(true);
 			setScorebugState(scorebug);
 
@@ -100,6 +101,7 @@ export const Admin = () => {
 
 	useEffect(() => {
 		if (unsavedChanges) {
+			console.debug("Saving changes");
 			const saveMatch = () => {
 				if (scorebugState) {
 					saveScorebugToService({
@@ -110,6 +112,7 @@ export const Admin = () => {
 						},
 					});
 				}
+				console.debug("Changes saved");
 				setUnsavedChanges(false);
 			};
 

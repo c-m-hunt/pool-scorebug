@@ -13,6 +13,8 @@ interface GameProps {
 export const Game = ({ game, saveGame, deleteGame, setLive }: GameProps) => {
 	const [values, setValues] = useState({ ...game });
 
+	console.debug("Rendering Game", game);
+
 	const getNewGame = (
 		event: React.ChangeEvent<HTMLInputElement>,
 		valAsInt: boolean,
