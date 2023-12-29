@@ -1,7 +1,9 @@
 import { useEffect, useState } from "react";
 import { Scorebug } from "../types";
 
-const baseUrl = "http://localhost:8080";
+const apiPort = "8080";
+const host = window.location.hostname;
+export const baseUrl = `http://${host}:${apiPort}`;
 
 interface ScorebugServiceResponse extends ServiceResponse {
 	scorebug?: Scorebug;
@@ -40,7 +42,6 @@ export const useScorebugService = (live = false): ScorebugServiceResponse => {
 		setScorebug(scorebug);
 	};
 
-    if (live) {}
 	useEffect(() => {
 		const getScorebug = async () => {
 			setLoading(true);
@@ -68,12 +69,12 @@ export const useScorebugService = (live = false): ScorebugServiceResponse => {
 	};
 };
 
-const getApi = async (url: string): Promise<[Scorebug, number]> => {
+export const getApi = async (url: string): Promise<[Scorebug, number]> => {
 	const response = await fetch(`${baseUrl}/${url}`);
 	return [await response.json(), response.status];
 };
 
-const postApi = async (url: string, data: Scorebug) => {
+export const postApi = async (url: string, data: Scorebug) => {
 	const response = await fetch(`${baseUrl}/${url}`, {
 		method: "POST",
 		headers: {

@@ -1,15 +1,13 @@
 import { useEffect, useState } from "react";
 import { Scorebug } from "../types";
-import { ServiceResponse } from "./api";
-
-const baseUrl = "http://localhost:8080";
-
+import { ServiceResponse, getApi } from "./api";
 interface LiveScorebugServiceResponse extends ServiceResponse {
 	scorebug?: Scorebug;
 }
 
-
-export const useLiveScorebugService = (live = false): LiveScorebugServiceResponse => {
+export const useLiveScorebugService = (
+	live = false,
+): LiveScorebugServiceResponse => {
 	const [scorebug, setScorebug] = useState<Scorebug | undefined>(undefined);
 	const [status, setStatus] = useState<number>(200);
 	const [loading, setLoading] = useState<boolean>(false);
@@ -55,20 +53,4 @@ export const useLiveScorebugService = (live = false): LiveScorebugServiceRespons
 		loading,
 		error,
 	};
-};
-
-const getApi = async (url: string): Promise<[Scorebug, number]> => {
-	const response = await fetch(`${baseUrl}/${url}`);
-	return [await response.json(), response.status];
-};
-
-const postApi = async (url: string, data: Scorebug) => {
-	const response = await fetch(`${baseUrl}/${url}`, {
-		method: "POST",
-		headers: {
-			"Content-Type": "application/json",
-		},
-		body: JSON.stringify(data),
-	});
-	return [await response.json(), response.status];
 };
