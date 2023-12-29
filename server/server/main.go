@@ -38,11 +38,14 @@ func Start() {
 	router.POST("/match", func(ctx *gin.Context) {
 		fmt.Println("POST /match")
 		s := api.SetScorebug(ctx)
-		broadcast <- Message{
-			Type: "scorebug",
-			Data: *s,
+		if s != nil {
+			broadcast <- Message{
+				Type: "scorebug",
+				Data: *s,
+			}
+		} else {
+			return
 		}
-		return
 	})
 	router.POST("/match/:liveGame", api.SetLiveGame)
 

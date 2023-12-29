@@ -151,37 +151,24 @@ export const Admin = () => {
 
 							<Card>
 								<Card.Header>
-									<Card.Title>
-										Games
-										<div
-											style={{
-												display: "inline",
-												width: "100%",
-												backgroundColor: "red",
-											}}
-										>
-											<Button variant="primary" size="sm" onClick={addGame}>
-												Add Game
-											</Button>
-										</div>
-									</Card.Title>
+									<Card.Title>Games</Card.Title>
 								</Card.Header>
 								<Card.Body>
 									{Object.entries(games).map(([id, game]) => {
 										return (
-											<Card className={game.live ? "active-game" : ""}>
-												<Card.Body>
-													<Game
-														game={game}
-														key={id}
-														saveGame={saveGame(id)}
-														deleteGame={deleteGame(id)}
-														setLive={setGameLive(id)}
-													/>
-												</Card.Body>
-											</Card>
+											<Game
+												game={game}
+												key={id}
+												saveGame={saveGame(id)}
+												deleteGame={deleteGame(id)}
+												setLive={setGameLive(id)}
+											/>
 										);
 									})}
+
+									<Button variant="primary" size="sm" onClick={addGame}>
+										Add Game
+									</Button>
 								</Card.Body>
 							</Card>
 						</>
