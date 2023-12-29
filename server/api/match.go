@@ -57,6 +57,7 @@ func SetScorebug(c *gin.Context) *Scorebug {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return nil
 	}
+	scorebug = s
 	c.JSON(http.StatusOK, s)
 	return &s
 }

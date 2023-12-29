@@ -17,6 +17,7 @@ export interface Match {
 }
 
 export interface Game {
+	id?: string;
 	homePlayer: string;
 	awayPlayer: string;
 	homeScore: number;

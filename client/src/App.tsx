@@ -3,7 +3,7 @@ import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import "./App.css";
 import { Admin } from "./components/Admin";
 import { Scorebug } from "./components/Scorebug";
-import { useScorebugService } from "./services/api";
+import { useLiveScorebugService } from "./services/liveService";
 
 const App = () => {
 	return (
@@ -17,7 +17,7 @@ const App = () => {
 };
 
 const ScorebugWrapper = () => {
-	const { scorebug } = useScorebugService();
+	const { scorebug } = useLiveScorebugService();
 	return (
 		<div className="scorebug-app">
 			{scorebug && <Scorebug match={scorebug.match} config={scorebug.config} />}

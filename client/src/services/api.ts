@@ -1,7 +1,9 @@
 import { useEffect, useState } from "react";
 import { Scorebug } from "../types";
 
-const baseUrl = "http://localhost:8080";
+const apiPort = "8080";
+const host = window.location.hostname;
+export const baseUrl = `http://${host}:${apiPort}`;
 
 interface ScorebugServiceResponse extends ServiceResponse {
 	scorebug?: Scorebug;
@@ -9,13 +11,13 @@ interface ScorebugServiceResponse extends ServiceResponse {
 	updateScorebug: (Scorebug: Scorebug) => void;
 }
 
-interface ServiceResponse {
+export interface ServiceResponse {
 	status: number;
 	loading: boolean;
 	error: Error | null;
 }
 
-export const useScorebugService = (): ScorebugServiceResponse => {
+export const useScorebugService = (live = false): ScorebugServiceResponse => {
 	const [scorebug, setScorebug] = useState<Scorebug | undefined>(undefined);
 	const [status, setStatus] = useState<number>(200);
 	const [loading, setLoading] = useState<boolean>(false);
@@ -41,19 +43,6 @@ export const useScorebugService = (): ScorebugServiceResponse => {
 	};
 
 	useEffect(() => {
-		const ws = new WebSocket("ws://localhost:8080/ws");
-		ws.onmessage = (event) => {
-			const json = JSON.parse(event.data);
-			console.log(json);
-			try {
-				if (json.type === "scorebug") {
-					setScorebug(json.data);
-				}
-			} catch (err) {
-				console.log(err);
-			}
-		};
-
 		const getScorebug = async () => {
 			setLoading(true);
 			try {
@@ -68,10 +57,6 @@ export const useScorebugService = (): ScorebugServiceResponse => {
 			}
 		};
 		getScorebug();
-
-		return () => {
-			ws.close();
-		};
 	}, []);
 
 	return {
@@ -84,12 +69,12 @@ export const useScorebugService = (): ScorebugServiceResponse => {
 	};
 };
 
-const getApi = async (url: string): Promise<[Scorebug, number]> => {
+export const getApi = async (url: string): Promise<[Scorebug, number]> => {
 	const response = await fetch(`${baseUrl}/${url}`);
 	return [await response.json(), response.status];
 };
 
-const postApi = async (url: string, data: Scorebug) => {
+export const postApi = async (url: string, data: Scorebug) => {
 	const response = await fetch(`${baseUrl}/${url}`, {
 		method: "POST",
 		headers: {

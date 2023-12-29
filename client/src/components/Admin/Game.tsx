@@ -1,7 +1,8 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import { Button, ButtonGroup, Card, Col, Form, Row } from "react-bootstrap";
 import { Game as IGame, PlayingColour } from "../../types";
+import { validateGame } from "../../validation/game";
 
 interface GameProps {
 	game: IGame;
@@ -12,6 +13,7 @@ interface GameProps {
 
 export const Game = ({ game, saveGame, deleteGame, setLive }: GameProps) => {
 	const [values, setValues] = useState({ ...game });
+	const [errors, setErrors] = useState([] as string[]);
 
 	console.debug("Rendering Game", game);
 
@@ -34,7 +36,9 @@ export const Game = ({ game, saveGame, deleteGame, setLive }: GameProps) => {
 
 	const handlePlayerBlur = (event: React.FocusEvent<HTMLInputElement>) => {
 		const newGame = getNewGame(event, false);
-		saveGame(newGame);
+		if (errors.length === 0) {
+			saveGame(newGame);
+		}
 	};
 
 	const setHomeColour = (colour: PlayingColour | undefined = undefined) => {
@@ -51,7 +55,9 @@ export const Game = ({ game, saveGame, deleteGame, setLive }: GameProps) => {
 
 	const handleScoreBlur = (event: React.FocusEvent<HTMLInputElement>) => {
 		const newGame = getNewGame(event, true);
-		saveGame(newGame);
+		if (errors.length === 0) {
+			saveGame(newGame);
+		}
 	};
 
 	const handleScoreChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -59,17 +65,26 @@ export const Game = ({ game, saveGame, deleteGame, setLive }: GameProps) => {
 	};
 
 	const awayColour = (homeColour: string | undefined) => {
-		if (homeColour === undefined) {
+		if (homeColour === undefined || homeColour === "") {
 			return "";
 		}
 		return homeColour === "red" ? "yellow" : "red";
 	};
 
+	useEffect(() => {
+		const errs = validateGame(values);
+		setErrors(errs);
+	}, [values]);
+
 	return (
 		<Card className={game.live ? "active-game" : ""}>
 			<Card.Header>
 				{!game.live && (
-					<Button variant="primary" onClick={() => setLive(true)}>
+					<Button
+						variant="primary"
+						disabled={errors.length > 0}
+						onClick={() => setLive(true)}
+					>
 						Make Live
 					</Button>
 				)}
@@ -158,6 +173,17 @@ export const Game = ({ game, saveGame, deleteGame, setLive }: GameProps) => {
 							)}
 						</Col>
 					</Row>
+					{errors.length > 0 && (
+						<Row className="mb-3">
+							<Col xs={4}>
+								<ul>
+									{errors.map((err) => (
+										<li>{err}</li>
+									))}
+								</ul>
+							</Col>
+						</Row>
+					)}
 				</Form>
 			</Card.Body>
 		</Card>

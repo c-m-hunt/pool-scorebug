@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { Button, Card } from "react-bootstrap";
 import { v4 as uuidv4 } from "uuid";
 import { useScorebugService } from "../../services/api";
+import { validateGame } from "../../validation/game";
 import {
 	Config as IConfig,
 	Game as IGame,
@@ -44,7 +45,6 @@ export const Admin = () => {
 				live: false,
 			};
 			setGames(updateGames);
-			setUnsavedChanges(true);
 		}
 	};
 
@@ -108,7 +108,9 @@ export const Admin = () => {
 						...scorebugState,
 						match: {
 							...scorebugState.match,
-							games: Object.values({ ...games }),
+							games: Object.values({ ...games }).filter(
+								(g) => validateGame(g).length === 0,
+							),
 						},
 					});
 				}
@@ -124,7 +126,9 @@ export const Admin = () => {
 		<div className="admin">
 			<Card>
 				<Card.Header>
-					<Card.Title>Match</Card.Title>
+					<Card.Title>
+						<h1>Scorebug Admin</h1>{" "}
+					</Card.Title>
 				</Card.Header>
 				<Card.Body>
 					{scorebugState && !loading && (
