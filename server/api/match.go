@@ -9,35 +9,35 @@ import (
 )
 
 type Scorebug struct {
-	Match `json:"match"`
+	Match  `json:"match"`
 	Config `json:"config"`
 }
 
 type Config struct {
-	ShowTeamScore bool `json:"showTeamScore"`
+	ShowTeamScore   bool `json:"showTeamScore"`
 	ShowPlayerScore bool `json:"showPlayerScore"`
 }
 
 type Match struct {
-	HomeTeam string `json:"homeTeam"`
-	AwayTeam string `json:"awayTeam"`
-	HomeScore int `json:"homeScore"`
-	AwayScore int `json:"awayScore"`
-	Games []Game `json:"games"`
+	HomeTeam  string `json:"homeTeam"`
+	AwayTeam  string `json:"awayTeam"`
+	HomeScore int    `json:"homeScore"`
+	AwayScore int    `json:"awayScore"`
+	Games     []Game `json:"games"`
 }
 
 type Game struct {
 	HomePlayer string `json:"homePlayer"`
 	AwayPlayer string `json:"awayPlayer"`
-	HomeScore int `json:"homeScore"`
-	AwayScore int `json:"awayScore"`
-	Live bool `json:"live"`
-	HomeColur string `json:"homeColour"`
+	HomeScore  int    `json:"homeScore"`
+	AwayScore  int    `json:"awayScore"`
+	Live       bool   `json:"live"`
+	HomeColur  string `json:"homeColour"`
 }
 
 var scorebug Scorebug = Scorebug{
 	Config: Config{
-		ShowTeamScore: true,
+		ShowTeamScore:   true,
 		ShowPlayerScore: true,
 	},
 }
@@ -46,25 +46,23 @@ func GetScorebug(c *gin.Context) {
 	c.JSON(http.StatusOK, scorebug)
 }
 
-func SetScorebug(c *gin.Context) {
+func SetScorebug(c *gin.Context) *Scorebug {
 	s := Scorebug{}
-	err:= c.BindJSON(&s)
+	err := c.BindJSON(&s)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-		return
+		return nil
 	}
 	if err := s.Match.Validate(); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-		return
+		return nil
 	}
-
-	scorebug = s
-	
-	c.JSON(http.StatusOK, scorebug)
+	c.JSON(http.StatusOK, s)
+	return &s
 }
 
 func SetLiveGame(c *gin.Context) {
-	lg, err := strconv.Atoi( c.Params.ByName("liveGame"))
+	lg, err := strconv.Atoi(c.Params.ByName("liveGame"))
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return

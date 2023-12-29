@@ -15,7 +15,7 @@ interface ServiceResponse {
 	error: Error | null;
 }
 
-export const useScorebugService = (refresh = 0): ScorebugServiceResponse => {
+export const useScorebugService = (): ScorebugServiceResponse => {
 	const [scorebug, setScorebug] = useState<Scorebug | undefined>(undefined);
 	const [status, setStatus] = useState<number>(200);
 	const [loading, setLoading] = useState<boolean>(false);
@@ -41,6 +41,19 @@ export const useScorebugService = (refresh = 0): ScorebugServiceResponse => {
 	};
 
 	useEffect(() => {
+		const ws = new WebSocket("ws://localhost:8080/ws");
+		ws.onmessage = (event) => {
+			const json = JSON.parse(event.data);
+			console.log(json);
+			try {
+				if (json.type === "scorebug") {
+					setScorebug(json.data);
+				}
+			} catch (err) {
+				console.log(err);
+			}
+		};
+
 		const getScorebug = async () => {
 			setLoading(true);
 			try {
@@ -55,15 +68,11 @@ export const useScorebugService = (refresh = 0): ScorebugServiceResponse => {
 			}
 		};
 		getScorebug();
-		if (refresh > 0) {
-			const interval = setInterval(() => {
-				getScorebug();
-			}, refresh * 1000);
-			return () => {
-				clearInterval(interval);
-			};
-		}
-	}, [refresh]);
+
+		return () => {
+			ws.close();
+		};
+	}, []);
 
 	return {
 		scorebug,

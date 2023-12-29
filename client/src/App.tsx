@@ -17,7 +17,7 @@ const App = () => {
 };
 
 const ScorebugWrapper = () => {
-	const { scorebug } = useScorebugService(5);
+	const { scorebug } = useScorebugService();
 	return (
 		<div className="scorebug-app">
 			{scorebug && <Scorebug match={scorebug.match} config={scorebug.config} />}
