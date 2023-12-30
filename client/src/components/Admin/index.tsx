@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { Button, Card } from "react-bootstrap";
 import { v4 as uuidv4 } from "uuid";
 import { useScorebugService } from "../../services/api";
-import { validateGame } from "../../validation/game";
+import { validateGame } from "../../validation";
 import {
 	Config as IConfig,
 	Game as IGame,

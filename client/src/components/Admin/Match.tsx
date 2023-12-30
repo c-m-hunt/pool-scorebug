@@ -1,6 +1,7 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import { Col, Form, Row } from "react-bootstrap";
+import { validateMatch } from "../../validation";
 import { Match as IMatch } from "./../../types";
 
 interface MatchProps {
@@ -10,6 +11,7 @@ interface MatchProps {
 
 export const Match = (props: MatchProps) => {
 	const { match, saveMatch } = props;
+	const [errors, setErrors] = useState([] as string[]);
 
 	const [values, setValues] = useState({
 		homeTeam: match.homeTeam,
@@ -25,7 +27,6 @@ export const Match = (props: MatchProps) => {
 			[name]: value,
 		};
 		setValues(newMatch);
-		saveMatch(newMatch);
 	};
 
 	const handleScoreChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -35,8 +36,15 @@ export const Match = (props: MatchProps) => {
 			[name]: parseInt(value),
 		};
 		setValues(newMatch);
-		saveMatch(newMatch);
 	};
+
+	useEffect(() => {
+		const errors = validateMatch(values);
+		setErrors(errors);
+		if (errors.length === 0) {
+			saveMatch(values);
+		}
+	}, [values, saveMatch]);
 
 	return (
 		<Form>
@@ -86,6 +94,17 @@ export const Match = (props: MatchProps) => {
 					</Form.Group>
 				</Col>
 			</Row>
+			{errors.length > 0 && (
+				<Row className="mb-3">
+					<Col xs={12}>
+						<ul>
+							{errors.map((error) => (
+								<li>{error}</li>
+							))}
+						</ul>
+					</Col>
+				</Row>
+			)}
 		</Form>
 	);
 };

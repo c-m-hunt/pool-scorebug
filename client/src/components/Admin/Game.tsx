@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 
 import { Button, ButtonGroup, Card, Col, Form, Row } from "react-bootstrap";
 import { Game as IGame, PlayingColour } from "../../types";
-import { validateGame } from "../../validation/game";
+import { validateGame } from "../../validation";
 
 interface GameProps {
 	game: IGame;
