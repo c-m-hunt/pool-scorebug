@@ -1,7 +1,8 @@
 package main
 
-import "github.com/c-m-hunt/pool-scorebug/server/server"
+import "github.com/c-m-hunt/pool-scorebug/server/cmd"
 
 func main() {
-	server.Start()
+
+	cmd.Execute()
 }

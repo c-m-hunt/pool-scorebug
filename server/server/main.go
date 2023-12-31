@@ -25,20 +25,34 @@ type Message struct {
 var clients = make(map[*websocket.Conn]bool)
 var broadcast = make(chan Message)
 
-func Start() {
-	router := gin.Default()
-	router.Use(cors.New(cors.Config{
+type Config struct {
+	buildPath string
+	stateFile *string
+}
+
+func NewConfig(buildPath string, stateFile *string) Config {
+	return Config{
+		buildPath: buildPath,
+		stateFile: stateFile,
+	}
+}
+
+func Start(config Config) {
+	r := gin.Default()
+	r.Use(cors.New(cors.Config{
 		AllowOrigins:  []string{"*"},
 		AllowMethods:  []string{"GET", "POST"},
 		AllowHeaders:  []string{"Origin", "content-type"},
 		ExposeHeaders: []string{"Content-Length"},
 		MaxAge:        12 * time.Hour,
 	}))
-	router.Static("/admin", "../client/build")
-	router.Static("/scorebug", "../client/build")
-	router.Static("/static", "../client/build/static")
-	router.GET("/match", api.GetScorebug)
-	router.POST("/match", func(ctx *gin.Context) {
+
+	// Static routes
+	r.Static("/admin", "../client/build")
+	r.Static("/scorebug", "../client/build")
+	r.Static("/static", "../client/build/static")
+	r.GET("/match", api.GetScorebug)
+	r.POST("/match", func(ctx *gin.Context) {
 		s := api.SetScorebug(ctx)
 		if s != nil {
 			broadcast <- Message{
@@ -49,11 +63,14 @@ func Start() {
 			return
 		}
 	})
-	router.POST("/match/:liveGame", api.SetLiveGame)
+	r.POST("/match/:liveGame", api.SetLiveGame)
 
-	router.GET("/ws", handleConnections)
+	// Websocket routes
+	r.GET("/ws", handleConnections)
 	go handleMessages()
-	router.Run()
+
+	// Start server
+	r.Run()
 }
 
 func handleConnections(ctx *gin.Context) {

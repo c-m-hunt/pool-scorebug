@@ -6,12 +6,13 @@ import (
 	"strconv"
 
 	"github.com/gin-gonic/gin"
+	log "github.com/sirupsen/logrus"
 )
 
 type Scorebug struct {
 	Match  `json:"match"`
 	Config `json:"config"`
-	Games []Game `json:"games"`
+	Games  []Game `json:"games"`
 }
 
 type Config struct {
@@ -40,6 +41,11 @@ var scorebug Scorebug = Scorebug{
 		ShowTeamScore:   true,
 		ShowPlayerScore: true,
 	},
+}
+
+func saveState(path string) error {
+	log.Debug("Saving state to ", path)
+	return nil
 }
 
 func GetScorebug(c *gin.Context) {
