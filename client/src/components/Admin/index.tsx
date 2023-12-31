@@ -1,8 +1,7 @@
 import "./Admin.css";
 
 import { useEffect, useState } from "react";
-import { Button, Card } from "react-bootstrap";
-import { v4 as uuidv4 } from "uuid";
+import { Card } from "react-bootstrap";
 import { useScorebugService } from "../../services/api";
 import { validateGame } from "../../validation";
 import {
@@ -11,7 +10,7 @@ import {
 	Match as IMatch,
 } from "./../../types";
 import { Config } from "./Config";
-import { Game } from "./Game";
+import { Games } from "./Games";
 import { Match } from "./Match";
 
 export const Admin = () => {
@@ -21,81 +20,44 @@ export const Admin = () => {
 		loading,
 	} = useScorebugService();
 	const [scorebugState, setScorebugState] = useState(scorebug);
-	const [games, setGames] = useState({} as { [key: string]: IGame });
+	const [games, setGames] = useState<IGame[]>([]);
 	const [loaded, setLoaded] = useState(false);
 	const [unsavedChanges, setUnsavedChanges] = useState(false);
 
-	const saveGame = (idx: string) => (game: IGame) => {
+	const saveGames = (gamesToSave: IGame[]) => {
 		if (scorebugState) {
-			const updateGames = games ? { ...games } : {};
-			updateGames[idx] = game;
-			setGames(updateGames);
-			setUnsavedChanges(true);
-		}
-	};
-
-	const addGame = () => {
-		if (scorebugState) {
-			const updateGames = games ? { ...games } : {};
-			updateGames[uuidv4()] = {
-				homePlayer: "",
-				awayPlayer: "",
-				homeScore: 0,
-				awayScore: 0,
-				live: false,
-			};
-			setGames(updateGames);
-		}
-	};
-
-	const deleteGame = (idx: string) => () => {
-		if (scorebugState) {
-			const updateGames = { ...games };
-			delete updateGames[idx];
-			setGames(updateGames);
-			setUnsavedChanges(true);
-		}
-	};
-
-	const setGameLive = (idx: string) => (live: boolean) => {
-		if (scorebugState) {
-			const updateGames = { ...games };
-			for (const g in updateGames) {
-				updateGames[g].live = false;
-			}
-			updateGames[idx].live = live;
-			setGames(updateGames);
+			console.debug("Saving games", gamesToSave);
+			setScorebugState({
+				...scorebugState,
+				games: gamesToSave.filter((g) => validateGame(g).length === 0),
+			});
 			setUnsavedChanges(true);
 		}
 	};
 
 	const saveMatchDetails = (matchToSave: IMatch) => {
 		if (scorebugState) {
+			console.log("Saving match details", matchToSave);
 			setScorebugState({ ...scorebugState, match: matchToSave });
+			setUnsavedChanges(true);
 		}
 	};
 
 	const saveConfig = (config: IConfig) => {
 		if (scorebugState) {
+			console.debug("Saving config", config);
 			setScorebugState({ ...scorebugState, config: config });
 			setUnsavedChanges(true);
 		}
 	};
 
 	useEffect(() => {
-		if (scorebug && !loaded) {
+		console.debug("Scorebug changed", scorebug, loaded);
+		if (scorebug) {
 			console.debug("Scorebug loaded");
 			setLoaded(true);
 			setScorebugState(scorebug);
-
-			if (scorebug.match.games) {
-				const { games } = scorebug.match;
-				const updateGames = {} as { [key: string]: IGame };
-				for (let i = 0; i < games.length; i++) {
-					updateGames[uuidv4()] = games[i];
-				}
-				setGames(updateGames);
-			}
+			setGames(scorebug.games || []);
 		}
 	}, [loaded, scorebug]);
 
@@ -104,15 +66,8 @@ export const Admin = () => {
 			console.debug("Saving changes");
 			const saveMatch = () => {
 				if (scorebugState) {
-					saveScorebugToService({
-						...scorebugState,
-						match: {
-							...scorebugState.match,
-							games: Object.values({ ...games }).filter(
-								(g) => validateGame(g).length === 0,
-							),
-						},
-					});
+					console.debug("Saving state", scorebugState);
+					saveScorebugToService(scorebugState);
 				}
 				console.debug("Changes saved");
 				setUnsavedChanges(false);
@@ -120,7 +75,7 @@ export const Admin = () => {
 
 			saveMatch();
 		}
-	}, [unsavedChanges, games, scorebugState, saveScorebugToService]);
+	}, [unsavedChanges, scorebugState, saveScorebugToService]);
 
 	return (
 		<div className="admin">
@@ -155,27 +110,12 @@ export const Admin = () => {
 									/>
 								</Card.Body>
 							</Card>
-
 							<Card>
 								<Card.Header>
 									<Card.Title>Games</Card.Title>
 								</Card.Header>
 								<Card.Body>
-									{Object.entries(games).map(([id, game]) => {
-										return (
-											<Game
-												game={game}
-												key={id}
-												saveGame={saveGame(id)}
-												deleteGame={deleteGame(id)}
-												setLive={setGameLive(id)}
-											/>
-										);
-									})}
-
-									<Button variant="primary" size="sm" onClick={addGame}>
-										Add Game
-									</Button>
+									<Games games={games} saveGames={saveGames} />
 								</Card.Body>
 							</Card>
 						</>

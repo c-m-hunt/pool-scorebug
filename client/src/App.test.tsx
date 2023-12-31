@@ -9,16 +9,17 @@ const matchTest: Match = {
 	awayTeam: "Away Team",
 	homeScore: 0,
 	awayScore: 0,
-	games: [
-		{
-			homePlayer: "Home Player",
-			awayPlayer: "Away Player",
-			homeScore: 0,
-			awayScore: 0,
-			live: true,
-		},
-	],
 };
+
+const gamesTest = [
+	{
+		homePlayer: "Home Player",
+		awayPlayer: "Away Player",
+		homeScore: 0,
+		awayScore: 0,
+		live: true,
+	},
+];
 
 const configTest: Config = {
 	showTeamScore: true,
@@ -26,14 +27,14 @@ const configTest: Config = {
 };
 
 test("renders test match", () => {
-	render(<Scorebug match={matchTest} config={configTest} />);
+	render(<Scorebug match={matchTest} config={configTest} games={gamesTest} />);
 	const linkElement = screen.queryByText(/Home Team/i);
 	expect(linkElement).toBeInTheDocument();
 });
 
 test("renders test match with team", () => {
 	const configTest2 = { showPlayerScore: true, showTeamScore: false };
-	render(<Scorebug match={matchTest} config={configTest2} />);
+	render(<Scorebug match={matchTest} config={configTest2} games={gamesTest} />);
 	const linkElement = screen.queryByText(/Home Team/i);
 	expect(linkElement).toBeNull();
 });

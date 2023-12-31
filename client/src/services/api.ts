@@ -14,6 +14,7 @@ interface ScorebugServiceResponse extends ServiceResponse {
 export interface ServiceResponse {
 	status: number;
 	loading: boolean;
+	saving: boolean;
 	error: Error | null;
 }
 
@@ -21,19 +22,21 @@ export const useScorebugService = (live = false): ScorebugServiceResponse => {
 	const [scorebug, setScorebug] = useState<Scorebug | undefined>(undefined);
 	const [status, setStatus] = useState<number>(200);
 	const [loading, setLoading] = useState<boolean>(false);
+	const [saving, setSaving] = useState<boolean>(false);
 	const [error, setError] = useState<Error | null>(null);
 
 	const saveScorebug = async (scorebug: Scorebug) => {
-		setLoading(true);
+		setSaving(true);
 		try {
 			const [data, status] = await postApi("match", scorebug);
+			console.log("Saved data", data);
 			setScorebug(data);
 			setStatus(status);
 		} catch (err) {
 			console.error(err);
 			setError(err as Error);
 		} finally {
-			setLoading(false);
+			setSaving(false);
 		}
 		return scorebug;
 	};
@@ -63,6 +66,7 @@ export const useScorebugService = (live = false): ScorebugServiceResponse => {
 		scorebug,
 		status,
 		loading,
+		saving,
 		error,
 		saveScorebug,
 		updateScorebug,

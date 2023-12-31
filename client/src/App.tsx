@@ -20,7 +20,13 @@ const ScorebugWrapper = () => {
 	const { scorebug } = useLiveScorebugService();
 	return (
 		<div className="scorebug-app">
-			{scorebug && <Scorebug match={scorebug.match} config={scorebug.config} />}
+			{scorebug && (
+				<Scorebug
+					match={scorebug.match}
+					games={scorebug.games}
+					config={scorebug.config}
+				/>
+			)}
 		</div>
 	);
 };

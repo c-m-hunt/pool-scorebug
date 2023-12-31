@@ -1,13 +1,14 @@
-import { Config, Match } from "../types";
+import { Config, Game, Match } from "../types";
 
 interface ScorebugProps {
 	match: Match;
 	config: Config;
+	games: Game[];
 }
 
 export const Scorebug = (props: ScorebugProps) => {
-	const { match, config } = props;
-	const liveGames = match.games ? match.games.filter((game) => game.live) : [];
+	const { match, config, games } = props;
+	const liveGames = games ? games.filter((game) => game.live) : [];
 	const liveGame = liveGames.length > 0 ? liveGames[0] : null;
 	const homeColorClass = liveGame?.homeColour
 		? `home-color-${liveGame.homeColour}`

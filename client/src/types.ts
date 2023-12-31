@@ -1,5 +1,6 @@
 export interface Scorebug {
 	match: Match;
+	games: Game[];
 	config: Config;
 }
 
@@ -11,7 +12,6 @@ export interface Config {
 export interface Match {
 	homeTeam: string;
 	awayTeam: string;
-	games: Game[];
 	homeScore: number;
 	awayScore: number;
 }

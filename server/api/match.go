@@ -11,6 +11,7 @@ import (
 type Scorebug struct {
 	Match  `json:"match"`
 	Config `json:"config"`
+	Games []Game `json:"games"`
 }
 
 type Config struct {
@@ -23,7 +24,6 @@ type Match struct {
 	AwayTeam  string `json:"awayTeam"`
 	HomeScore int    `json:"homeScore"`
 	AwayScore int    `json:"awayScore"`
-	Games     []Game `json:"games"`
 }
 
 type Game struct {
@@ -53,7 +53,7 @@ func SetScorebug(c *gin.Context) *Scorebug {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return nil
 	}
-	if err := s.Match.Validate(); err != nil {
+	if err := s.Validate(); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return nil
 	}
@@ -69,7 +69,7 @@ func SetLiveGame(c *gin.Context) {
 		return
 	}
 	foundGame := false
-	for i, game := range scorebug.Match.Games {
+	for i, game := range scorebug.Games {
 		if i == lg {
 			foundGame = true
 			game.Live = true
@@ -84,17 +84,19 @@ func SetLiveGame(c *gin.Context) {
 	c.JSON(http.StatusOK, scorebug)
 }
 
-func (m Match) Validate() error {
+func (s Scorebug) Validate() error {
+	m := s.Match
+	g := s.Games
 	if m.HomeTeam == "" || m.AwayTeam == "" {
 		return errors.New("Teams must be set")
 	}
-	for _, game := range m.Games {
+	for _, game := range g {
 		if game.HomePlayer == "" || game.AwayPlayer == "" {
 			return errors.New("Players must be set")
 		}
 	}
 	liveCount := 0
-	for _, game := range m.Games {
+	for _, game := range g {
 		if game.Live {
 			liveCount++
 		}
