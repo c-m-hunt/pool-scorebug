@@ -14,8 +14,8 @@ export const Scoreboard = ({ config, games, match }: Scorebug) => {
 				</Row>
 			)}
 			<Match {...match} />
-			{games?.map((game) => (
-				<Game {...game} />
+			{games?.map((game, idx) => (
+				<Game key={idx} {...game} />
 			))}
 		</Container>
 	);

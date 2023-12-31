@@ -16,7 +16,7 @@
   width: 100%;
 }
 
-.scorebug_match {
+.scorebug-match {
   font-size: 1.3em;
 }
 
@@ -30,28 +30,28 @@
   border-right: 1rem solid red;
 }
 
-.scorebug_game {
+.scorebug-game {
   font-size: 2em;
   background: rgb(0,0,0);
   background: linear-gradient(180deg, rgba(0,0,0,1) 0%, rgba(98,98,99,1) 29%, rgba(0,0,0,1) 100%);
   padding: 0.5rem 0 0.5rem 0;
 }
 
-.scorebug_match div, .scorebug_game div {
+.scorebug-match div, .scorebug-game div {
   display: inline-block;
 }
 
-.scorebug_match .score, .scorebug_game .score {
+.scorebug-match .score, .scorebug-game .score {
   width: 10%;
   text-align: center;
 }
 
-.scorebug_match .score div, .scorebug_game .score div {
+.scorebug-match .score div, .scorebug-game .score div {
   margin: 0 1rem 0 1rem;
   font-weight: bold;
 }
 
-.scorebug_match .scorebug_match_team, .scorebug_game .scorebug_game_player {
+.scorebug-match .scorebug-match-team, .scorebug-game .scorebug-game-player {
   width: 45%;
   text-align: center;
 }

@@ -10,23 +10,23 @@ export const Scorebug = ({ match, config, games }: ScorebugProps) => {
 	return (
 		<div className="scorebug">
 			{config.showTeamScore && (
-				<div className="scorebug_match">
-					<div className="scorebug_match_team">{match.homeTeam}</div>
+				<div className="scorebug-match">
+					<div className="scorebug-match-team">{match.homeTeam}</div>
 					<div className="score">
 						<div>{match.homeScore}</div>
 						<div>{match.awayScore}</div>
 					</div>
-					<div className="scorebug_match_team">{match.awayTeam}</div>
+					<div className="scorebug-match-team">{match.awayTeam}</div>
 				</div>
 			)}
 			{liveGame && (
-				<div className={`scorebug_game ${homeColorClass}`}>
-					<div className="scorebug_game_player">{liveGame.homePlayer}</div>
+				<div className={`scorebug-game ${homeColorClass}`}>
+					<div className="scorebug-game-player">{liveGame.homePlayer}</div>
 					<div className="score">
 						<div>{liveGame.homeScore}</div>
 						<div>{liveGame.awayScore}</div>
 					</div>
-					<div className="scorebug_game_player">{liveGame.awayPlayer}</div>
+					<div className="scorebug-game-player">{liveGame.awayPlayer}</div>
 				</div>
 			)}
 		</div>
