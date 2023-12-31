@@ -186,8 +186,8 @@ export const Game = ({ game, saveGame, deleteGame, setLive }: GameProps) => {
 						<Row className="mb-3">
 							<Col xs={4}>
 								<ul>
-									{errors.map((err) => (
-										<li>{err}</li>
+									{errors.map((err, i) => (
+										<li key={i}>{err}</li>
 									))}
 								</ul>
 							</Col>

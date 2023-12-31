@@ -116,8 +116,8 @@ export const Match = (props: MatchProps) => {
 				<Row className="mb-3">
 					<Col xs={12}>
 						<ul>
-							{errors.map((error) => (
-								<li>{error}</li>
+							{errors.map((err, i) => (
+								<li key={i}>{err}</li>
 							))}
 						</ul>
 					</Col>
