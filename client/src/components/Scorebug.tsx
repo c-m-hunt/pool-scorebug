@@ -1,13 +1,6 @@
-import { Config, Game, Match } from "../types";
+import { Scorebug as ScorebugProps } from "../types";
 
-interface ScorebugProps {
-	match: Match;
-	config: Config;
-	games: Game[];
-}
-
-export const Scorebug = (props: ScorebugProps) => {
-	const { match, config, games } = props;
+export const Scorebug = ({ match, config, games }: ScorebugProps) => {
 	const liveGames = games ? games.filter((game) => game.live) : [];
 	const liveGame = liveGames.length > 0 ? liveGames[0] : null;
 	const homeColorClass = liveGame?.homeColour
@@ -18,12 +11,12 @@ export const Scorebug = (props: ScorebugProps) => {
 		<div className="scorebug">
 			{config.showTeamScore && (
 				<div className="scorebug_match">
-					<div className="scorebug_match_team">{props.match.homeTeam}</div>
+					<div className="scorebug_match_team">{match.homeTeam}</div>
 					<div className="score">
 						<div>{match.homeScore}</div>
 						<div>{match.awayScore}</div>
 					</div>
-					<div className="scorebug_match_team">{props.match.awayTeam}</div>
+					<div className="scorebug_match_team">{match.awayTeam}</div>
 				</div>
 			)}
 			{liveGame && (

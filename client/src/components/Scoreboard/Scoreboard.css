@@ -1,0 +1,33 @@
+.scoreboard {
+    background-color: black;
+    color: white;
+    opacity: 0.95;
+    width: 100%;
+}
+
+.scoreboard .row div {
+    text-align: center;
+    font-size: 1.3em;
+}
+
+.scoreboard .row.match-title div {
+    text-align: center;
+    font-size: 1.5em;
+    font-weight: bold;
+}
+
+.scoreboard .row div.header {
+    font-size: 2em;
+    font-weight: bold;
+}
+
+.scoreboard .row {
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid #333;
+}
+
+
+
+.scoreboard .row.live {
+    background-color: red;
+}
