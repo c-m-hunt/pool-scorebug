@@ -8,7 +8,7 @@ interface GameProps {
 	game: IGame;
 	saveGame: (game: IGame) => void;
 	deleteGame: () => void;
-	setLive: (live: boolean) => void;
+	setLive?: (live: boolean) => void;
 }
 
 export const Game = ({ game, saveGame, deleteGame, setLive }: GameProps) => {
@@ -28,6 +28,15 @@ export const Game = ({ game, saveGame, deleteGame, setLive }: GameProps) => {
 		};
 		setValues(newGame);
 		return newGame;
+	};
+
+	const makeLive = (live: boolean) => {
+		const newGame = {
+			...values,
+			live,
+		};
+		setValues(newGame);
+		saveGame(newGame);
 	};
 
 	const handlePlayerChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -79,7 +88,7 @@ export const Game = ({ game, saveGame, deleteGame, setLive }: GameProps) => {
 	return (
 		<Card className={game.live ? "active-game" : ""}>
 			<Card.Header>
-				{!game.live && (
+				{setLive && !game.live && (
 					<Button
 						variant="primary"
 						disabled={errors.length > 0}
@@ -88,7 +97,7 @@ export const Game = ({ game, saveGame, deleteGame, setLive }: GameProps) => {
 						Make Live
 					</Button>
 				)}
-				{game.live && (
+				{setLive && game.live && (
 					<Button variant="primary" onClick={() => setLive(false)}>
 						Remove Live
 					</Button>

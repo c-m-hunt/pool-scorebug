@@ -50,6 +50,7 @@ export const useLiveScorebugService = (
 	return {
 		scorebug,
 		status,
+		saving: false,
 		loading,
 		error,
 	};

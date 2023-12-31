@@ -20,31 +20,45 @@ export const Match = (props: MatchProps) => {
 		awayScore: match.awayScore,
 	} as IMatch);
 
-	const handleTeamChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+	const getNewMatch = (
+		event: React.ChangeEvent<HTMLInputElement>,
+		valAsInt: boolean,
+	): IMatch => {
 		const { name, value } = event.target;
 		const newMatch = {
 			...values,
-			[name]: value,
+			[name]: valAsInt ? parseInt(value) : value,
 		};
 		setValues(newMatch);
+		return newMatch;
+	};
+
+	const handleTeamChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+		getNewMatch(event, false);
 	};
 
 	const handleScoreChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-		const { name, value } = event.target;
-		const newMatch = {
-			...values,
-			[name]: parseInt(value),
-		};
-		setValues(newMatch);
+		getNewMatch(event, true);
+	};
+
+	const handleTeamBlur = (event: React.FocusEvent<HTMLInputElement>) => {
+		const newMatch = getNewMatch(event, false);
+		if (errors.length === 0) {
+			saveMatch(newMatch);
+		}
+	};
+
+	const handleScoreBlur = (event: React.FocusEvent<HTMLInputElement>) => {
+		const newMatch = getNewMatch(event, true);
+		if (errors.length === 0) {
+			saveMatch(newMatch);
+		}
 	};
 
 	useEffect(() => {
 		const errors = validateMatch(values);
 		setErrors(errors);
-		if (errors.length === 0) {
-			saveMatch(values);
-		}
-	}, [values, saveMatch]);
+	}, [values]);
 
 	return (
 		<Form>
@@ -57,6 +71,7 @@ export const Match = (props: MatchProps) => {
 							name="homeTeam"
 							value={values.homeTeam}
 							onChange={handleTeamChange}
+							onBlur={handleTeamBlur}
 						/>
 					</Form.Group>
 				</Col>
@@ -68,6 +83,7 @@ export const Match = (props: MatchProps) => {
 							name="homeScore"
 							value={values.homeScore || 0}
 							onChange={handleScoreChange}
+							onBlur={handleScoreBlur}
 						/>
 					</Form.Group>
 				</Col>
@@ -79,6 +95,7 @@ export const Match = (props: MatchProps) => {
 							name="awayScore"
 							value={values.awayScore || 0}
 							onChange={handleScoreChange}
+							onBlur={handleScoreBlur}
 						/>
 					</Form.Group>
 				</Col>
@@ -90,6 +107,7 @@ export const Match = (props: MatchProps) => {
 							name="awayTeam"
 							value={values.awayTeam}
 							onChange={handleTeamChange}
+							onBlur={handleTeamBlur}
 						/>
 					</Form.Group>
 				</Col>

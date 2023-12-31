@@ -36,7 +36,6 @@ func Start() {
 	}))
 	router.GET("/match", api.GetScorebug)
 	router.POST("/match", func(ctx *gin.Context) {
-		fmt.Println("POST /match")
 		s := api.SetScorebug(ctx)
 		if s != nil {
 			broadcast <- Message{
