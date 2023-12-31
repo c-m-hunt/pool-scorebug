@@ -52,6 +52,7 @@ func Start(config Config) {
 	// Static routes
 	r.Static("/admin", "../client/build")
 	r.Static("/scorebug", "../client/build")
+	r.Static("/scoreboard", "../client/build")
 	r.Static("/static", "../client/build/static")
 	r.GET("/match", api.GetScorebug)
 	r.POST("/match", func(ctx *gin.Context) {
