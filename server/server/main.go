@@ -34,6 +34,9 @@ func Start() {
 		ExposeHeaders: []string{"Content-Length"},
 		MaxAge:        12 * time.Hour,
 	}))
+	router.Static("/admin", "../client/build")
+	router.Static("/scorebug", "../client/build")
+	router.Static("/static", "../client/build/static")
 	router.GET("/match", api.GetScorebug)
 	router.POST("/match", func(ctx *gin.Context) {
 		s := api.SetScorebug(ctx)
