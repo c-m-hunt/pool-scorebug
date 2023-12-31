@@ -29,7 +29,7 @@ export const useScorebugService = (live = false): ScorebugServiceResponse => {
 		setSaving(true);
 		try {
 			const [data, status] = await postApi("match", scorebug);
-			console.log("Saved data", data);
+			console.debug("Saved data", data);
 			setScorebug(data);
 			setStatus(status);
 		} catch (err) {
