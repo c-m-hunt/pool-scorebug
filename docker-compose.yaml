@@ -11,5 +11,5 @@ services:
       - ./state:/state
     environment:
       # Remove both of these to set the environment to development and show debug logs
-      - ENVIROMENT=production
+      - ENVIRONMENT=production
       - GIN_MODE=release
