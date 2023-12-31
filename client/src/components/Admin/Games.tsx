@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Button, Card } from "react-bootstrap";
+import { Button } from "react-bootstrap";
 import { Game as IGame } from "../../types";
 import { Game } from "./Game";
 
@@ -22,6 +22,11 @@ export const Games = ({ games: gamesIn, saveGames }: GamesProps) => {
 
 	const saveGame = (idx: number) => (game: IGame) => {
 		const updateGames = [...games];
+		if (game.live) {
+			for (const g of updateGames) {
+				g.live = false;
+			}
+		}
 		updateGames[idx] = game;
 		setGames(updateGames);
 		saveGames(updateGames);
@@ -33,6 +38,11 @@ export const Games = ({ games: gamesIn, saveGames }: GamesProps) => {
 
 	const saveAddGame = (newGame: IGame) => {
 		const updateGames = [...games];
+		if (newGame.live) {
+			for (const g of updateGames) {
+				g.live = false;
+			}
+		}
 		updateGames.push(newGame);
 		setGames(updateGames);
 		saveGames(updateGames);
@@ -42,18 +52,6 @@ export const Games = ({ games: gamesIn, saveGames }: GamesProps) => {
 	const deleteGame = (idx: number) => () => {
 		const updateGames = [...games];
 		delete updateGames[idx];
-		setGames(updateGames);
-		saveGames(updateGames);
-	};
-
-	const setGameLive = (idx: number) => (live: boolean) => {
-		const updateGames = [
-			...games.map((g) => {
-				g.live = false;
-				return g;
-			}),
-		];
-		updateGames[idx].live = live;
 		setGames(updateGames);
 		saveGames(updateGames);
 	};
@@ -72,13 +70,13 @@ export const Games = ({ games: gamesIn, saveGames }: GamesProps) => {
 						key={idx}
 						saveGame={saveGame(idx)}
 						deleteGame={deleteGame(idx)}
-						setLive={setGameLive(idx)}
 					/>
 				);
 			})}
 			{addingGame && (
 				<Game
 					game={{ ...newGame }}
+					newGame={true}
 					saveGame={saveAddGame}
 					deleteGame={cancelAddGame}
 				/>

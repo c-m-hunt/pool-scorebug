@@ -6,12 +6,12 @@ import { validateGame } from "../../validation";
 
 interface GameProps {
 	game: IGame;
+	newGame?: boolean;
 	saveGame: (game: IGame) => void;
 	deleteGame: () => void;
-	setLive?: (live: boolean) => void;
 }
 
-export const Game = ({ game, saveGame, deleteGame, setLive }: GameProps) => {
+export const Game = ({ game, newGame, saveGame, deleteGame }: GameProps) => {
 	const [values, setValues] = useState({ ...game });
 	const [errors, setErrors] = useState([] as string[]);
 
@@ -88,17 +88,17 @@ export const Game = ({ game, saveGame, deleteGame, setLive }: GameProps) => {
 	return (
 		<Card className={game.live ? "active-game" : ""}>
 			<Card.Header>
-				{setLive && !game.live && (
+				{!newGame && !game.live && (
 					<Button
 						variant="primary"
 						disabled={errors.length > 0}
-						onClick={() => setLive(true)}
+						onClick={() => makeLive(true)}
 					>
 						Make Live
 					</Button>
 				)}
-				{setLive && game.live && (
-					<Button variant="primary" onClick={() => setLive(false)}>
+				{!newGame && game.live && (
+					<Button variant="primary" onClick={() => makeLive(false)}>
 						Remove Live
 					</Button>
 				)}{" "}
