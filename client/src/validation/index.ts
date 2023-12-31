@@ -1,4 +1,4 @@
-import { Game, Match } from "../types";
+import { Game, Match, Scorebug } from "../types";
 
 export const validateGame = (game: Game): string[] => {
 	const errors: string[] = [];
@@ -36,6 +36,26 @@ export const validateMatch = (match: Match): string[] => {
 	}
 	if (match.awayScore < 0) {
 		errors.push("Away score cannot be negative");
+	}
+
+	return errors;
+};
+
+export const validateScorebug = (scorebug: Scorebug): string[] => {
+	const errors: string[] = [];
+	const matchErrors = validateMatch(scorebug.match);
+	if (matchErrors.length) {
+		errors.push("Fix match errors");
+	}
+	if (scorebug.games) {
+		const gameErrors = scorebug.games.map(validateGame);
+		const gameErrorCount = gameErrors.reduce(
+			(acc, errors) => acc + errors.length,
+			0,
+		);
+		if (gameErrorCount) {
+			errors.push("Fix game errors");
+		}
 	}
 
 	return errors;

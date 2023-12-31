@@ -20,6 +20,7 @@ type Scorebug struct {
 type Config struct {
 	ShowTeamScore   bool `json:"showTeamScore"`
 	ShowPlayerScore bool `json:"showPlayerScore"`
+	Description	 string `json:"description"`
 }
 
 type Match struct {

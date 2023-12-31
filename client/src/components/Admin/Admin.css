@@ -5,3 +5,8 @@
 .card {
     margin-bottom: 1rem;
 }
+
+.row>* {
+    padding-right: calc(var(--bs-gutter-x) * .1);
+    padding-left: calc(var(--bs-gutter-x) * .1);
+}

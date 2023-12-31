@@ -7,6 +7,7 @@ export interface Scorebug {
 export interface Config {
 	showTeamScore: boolean;
 	showPlayerScore: boolean;
+	description?: string;
 }
 
 export interface Match {

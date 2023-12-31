@@ -41,7 +41,11 @@ var startServerCmd = &cobra.Command{
 		}
 		log.Debug("Starting server")
 		log.Debug("Build path: ", buildPath)
-		log.Debug("State file: ", *stateFile)
+		if stateFile == nil {
+			log.Debug("State file: not set")
+		} else {
+			log.Debug("State file: ", *stateFile)
+		}
 
 		server.Start(server.NewConfig(
 			buildPath, stateFile,

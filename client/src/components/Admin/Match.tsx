@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { Col, Form, Row } from "react-bootstrap";
 import { validateMatch } from "../../validation";
 import { Match as IMatch } from "./../../types";
+import { Errors } from "./partials/Errors";
 
 interface MatchProps {
 	match: IMatch;
@@ -118,12 +119,8 @@ export const Match = (props: MatchProps) => {
 			</Row>
 			{errors.length > 0 && (
 				<Row className="mb-3">
-					<Col xs={12}>
-						<ul>
-							{errors.map((err, i) => (
-								<li key={i}>{err}</li>
-							))}
-						</ul>
+					<Col>
+						<Errors errors={errors} />
 					</Col>
 				</Row>
 			)}

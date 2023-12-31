@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { Button, ButtonGroup, Card, Col, Form, Row } from "react-bootstrap";
 import { Game as IGame, PlayingColour } from "../../types";
 import { validateGame } from "../../validation";
+import { Errors } from "./partials/Errors";
 
 interface GameProps {
 	game: IGame;
@@ -73,9 +74,11 @@ export const Game = ({ game, newGame, saveGame, deleteGame }: GameProps) => {
 		getNewGame(event, true);
 	};
 
-	const awayColour = (homeColour: string | undefined) => {
+	const awayColour = (
+		homeColour: string | undefined,
+	): PlayingColour | undefined => {
 		if (homeColour === undefined || homeColour === "") {
-			return "";
+			return undefined;
 		}
 		return homeColour === "red" ? "yellow" : "red";
 	};
@@ -86,25 +89,30 @@ export const Game = ({ game, newGame, saveGame, deleteGame }: GameProps) => {
 	}, [values]);
 
 	return (
-		<Card className={game.live ? "active-game" : ""}>
+		<Card
+			className={game.live ? "active-game" : ""}
+			border={game.live ? "success" : "dark"}
+		>
 			<Card.Header>
-				{!newGame && !game.live && (
-					<Button
-						variant="primary"
-						disabled={errors.length > 0}
-						onClick={() => makeLive(true)}
-					>
-						Make Live
+				<ButtonGroup>
+					{!newGame && !game.live && (
+						<Button
+							variant="primary"
+							disabled={errors.length > 0}
+							onClick={() => makeLive(true)}
+						>
+							Make Live
+						</Button>
+					)}
+					{!newGame && game.live && (
+						<Button variant="primary" onClick={() => makeLive(false)}>
+							Remove Live
+						</Button>
+					)}{" "}
+					<Button variant="danger" onClick={() => deleteGame()}>
+						Delete
 					</Button>
-				)}
-				{!newGame && game.live && (
-					<Button variant="primary" onClick={() => makeLive(false)}>
-						Remove Live
-					</Button>
-				)}{" "}
-				<Button variant="danger" onClick={() => deleteGame()}>
-					Delete
-				</Button>
+				</ButtonGroup>
 			</Card.Header>
 			<Card.Body>
 				<Form>
@@ -184,12 +192,8 @@ export const Game = ({ game, newGame, saveGame, deleteGame }: GameProps) => {
 					</Row>
 					{errors.length > 0 && (
 						<Row className="mb-3">
-							<Col xs={4}>
-								<ul>
-									{errors.map((err, i) => (
-										<li key={i}>{err}</li>
-									))}
-								</ul>
+							<Col>
+								<Errors errors={errors} />
 							</Col>
 						</Row>
 					)}

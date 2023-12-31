@@ -7,4 +7,9 @@ services:
     ports:
       - "8080:8080"
     volumes:
+      # Remove this if you don't want to persist the state
       - ./state:/state
+    environment:
+      # Remove both of these to set the environment to development and show debug logs
+      - ENVIROMENT=production
+      - GIN_MODE=release

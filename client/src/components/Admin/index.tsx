@@ -3,7 +3,7 @@ import "./Admin.css";
 import { useEffect, useState } from "react";
 import { Button, ButtonGroup, Card } from "react-bootstrap";
 import { useScorebugService } from "../../services/api";
-import { validateGame } from "../../validation";
+import { validateGame, validateScorebug } from "../../validation";
 import {
 	Config as IConfig,
 	Game as IGame,
@@ -69,7 +69,12 @@ export const Admin = () => {
 			const saveMatch = () => {
 				if (scorebugState) {
 					console.debug("Saving state", scorebugState);
-					saveScorebugToService(scorebugState);
+					if (validateScorebug(scorebugState).length === 0) {
+						console.debug("Saving scorebug");
+						saveScorebugToService(scorebugState);
+					} else {
+						console.debug("Scorebug invalid");
+					}
 				}
 				console.debug("Changes saved");
 				setUnsavedChanges(false);
