@@ -31,5 +31,5 @@ COPY --from=server-builder /app/scorebug /app/server
 ENV PORT=8080
 ENV ENVIROMENT=production
 
-ENTRYPOINT ["./scorebug", "/app/client/build"]
+ENTRYPOINT ["./scorebug", "start", "/app/client/build", "/state/state.json"]
 

@@ -9,6 +9,7 @@ import (
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"github.com/gorilla/websocket"
+	log "github.com/sirupsen/logrus"
 )
 
 var upgrader = websocket.Upgrader{
@@ -38,6 +39,7 @@ func NewConfig(buildPath string, stateFile *string) Config {
 }
 
 func Start(config Config) {
+	api.LoadState(config.stateFile)
 	r := gin.Default()
 	r.Use(cors.New(cors.Config{
 		AllowOrigins:  []string{"*"},
@@ -53,17 +55,22 @@ func Start(config Config) {
 	r.Static("/static", "../client/build/static")
 	r.GET("/match", api.GetScorebug)
 	r.POST("/match", func(ctx *gin.Context) {
-		s := api.SetScorebug(ctx)
-		if s != nil {
+		scorebug := api.SetScorebug(ctx)
+		err := api.SaveState(config.stateFile, *scorebug)
+		if err != nil {
+			log.Error(err)
+		}
+		if scorebug != nil {
 			broadcast <- Message{
 				Type: "scorebug",
-				Data: *s,
+				Data: *scorebug,
 			}
 		} else {
 			return
 		}
 	})
 	r.POST("/match/:liveGame", api.SetLiveGame)
+	r.GET("/reset", api.ResetState)
 
 	// Websocket routes
 	r.GET("/ws", handleConnections)

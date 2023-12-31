@@ -7,8 +7,8 @@ export const baseUrl = `http://${host}:${apiPort}`;
 
 interface ScorebugServiceResponse extends ServiceResponse {
 	scorebug?: Scorebug;
-	saveScorebug: (scoerbug: Scorebug) => Promise<Scorebug>;
-	updateScorebug: (Scorebug: Scorebug) => void;
+	saveScorebug: (scorebug: Scorebug) => Promise<void>;
+	resetScorebug: () => Promise<void>;
 }
 
 export interface ServiceResponse {
@@ -25,6 +25,17 @@ export const useScorebugService = (live = false): ScorebugServiceResponse => {
 	const [saving, setSaving] = useState<boolean>(false);
 	const [error, setError] = useState<Error | null>(null);
 
+	const resetScorebug = async () => {
+		try {
+			const [data, status] = await getApi("reset");
+			setScorebug(data);
+			setStatus(status);
+		} catch (err) {
+			console.error(err);
+			setError(err as Error);
+		}
+	};
+
 	const saveScorebug = async (scorebug: Scorebug) => {
 		setSaving(true);
 		try {
@@ -38,11 +49,6 @@ export const useScorebugService = (live = false): ScorebugServiceResponse => {
 		} finally {
 			setSaving(false);
 		}
-		return scorebug;
-	};
-
-	const updateScorebug = (scorebug: Scorebug) => {
-		setScorebug(scorebug);
 	};
 
 	useEffect(() => {
@@ -69,7 +75,7 @@ export const useScorebugService = (live = false): ScorebugServiceResponse => {
 		saving,
 		error,
 		saveScorebug,
-		updateScorebug,
+		resetScorebug,
 	};
 };
 

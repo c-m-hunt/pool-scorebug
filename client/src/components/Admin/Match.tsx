@@ -60,6 +60,10 @@ export const Match = (props: MatchProps) => {
 		setErrors(errors);
 	}, [values]);
 
+	useEffect(() => {
+		setValues(match);
+	}, [match]);
+
 	return (
 		<Form>
 			<Row className="mb-3">

@@ -1,7 +1,7 @@
 import "./Admin.css";
 
 import { useEffect, useState } from "react";
-import { Card } from "react-bootstrap";
+import { Button, ButtonGroup, Card } from "react-bootstrap";
 import { useScorebugService } from "../../services/api";
 import { validateGame } from "../../validation";
 import {
@@ -17,11 +17,13 @@ export const Admin = () => {
 	const {
 		scorebug,
 		saveScorebug: saveScorebugToService,
+		resetScorebug,
 		loading,
 	} = useScorebugService();
 	const [scorebugState, setScorebugState] = useState(scorebug);
 	const [games, setGames] = useState<IGame[]>([]);
 	const [loaded, setLoaded] = useState(false);
+	const [isResetting, setIsResetting] = useState(false);
 	const [unsavedChanges, setUnsavedChanges] = useState(false);
 
 	const saveGames = (gamesToSave: IGame[]) => {
@@ -119,6 +121,31 @@ export const Admin = () => {
 								</Card.Body>
 							</Card>
 						</>
+					)}
+					{!isResetting && (
+						<Button
+							onClick={() => {
+								setIsResetting(true);
+							}}
+						>
+							Reset
+						</Button>
+					)}
+					{isResetting && (
+						<ButtonGroup>
+							<Button
+								variant="danger"
+								onClick={() => {
+									resetScorebug();
+									setIsResetting(false);
+								}}
+							>
+								Continue reset
+							</Button>
+							<Button variant="secondary" onClick={() => setIsResetting(false)}>
+								Cancel
+							</Button>
+						</ButtonGroup>
 					)}
 				</Card.Body>
 			</Card>

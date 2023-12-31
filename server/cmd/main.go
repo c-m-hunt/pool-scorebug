@@ -41,7 +41,7 @@ var startServerCmd = &cobra.Command{
 		}
 		log.Debug("Starting server")
 		log.Debug("Build path: ", buildPath)
-		log.Debug("State file: ", stateFile)
+		log.Debug("State file: ", *stateFile)
 
 		server.Start(server.NewConfig(
 			buildPath, stateFile,

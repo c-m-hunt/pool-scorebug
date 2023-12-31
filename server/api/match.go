@@ -1,8 +1,10 @@
 package api
 
 import (
+	"encoding/json"
 	"errors"
 	"net/http"
+	"os"
 	"strconv"
 
 	"github.com/gin-gonic/gin"
@@ -36,16 +38,59 @@ type Game struct {
 	HomeColur  string `json:"homeColour"`
 }
 
-var scorebug Scorebug = Scorebug{
+var scorebug *Scorebug = &Scorebug{
 	Config: Config{
 		ShowTeamScore:   true,
 		ShowPlayerScore: true,
 	},
 }
 
-func saveState(path string) error {
-	log.Debug("Saving state to ", path)
+func SaveState(path *string, scorebug Scorebug) error {
+	if path != nil {
+		log.Debug("Saving state to ", *path)
+
+		// Save scorebug JSON to file
+		b, err := json.Marshal(scorebug)
+		if err != nil {
+			return err
+		}
+
+		// Write to file
+		err = os.WriteFile(*path, b, 0644)
+		if err != nil {
+			return err
+		}
+
+		return nil
+	}
 	return nil
+}
+
+func LoadState(path *string) error {
+	if path == nil {
+		return nil
+	}
+	// If file exists
+	if _, err := os.Stat(*path); err == nil {
+		log.Debug("Loading state from ", *path)
+		// Read file
+		b, err := os.ReadFile(*path)
+		if err != nil {
+			return err
+		}
+
+		// Unmarshal JSON
+		err = json.Unmarshal(b, &scorebug)
+		if err != nil {
+			return err
+		}
+
+		return nil
+	} else {
+		log.Debug("No state file found at ", *path)
+		log.Debug("Using default state")
+		return nil
+	}
 }
 
 func GetScorebug(c *gin.Context) {
@@ -63,9 +108,19 @@ func SetScorebug(c *gin.Context) *Scorebug {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return nil
 	}
-	scorebug = s
+	scorebug = &s
 	c.JSON(http.StatusOK, s)
 	return &s
+}
+
+func ResetState(c *gin.Context) {
+	scorebug = &Scorebug{
+		Config: Config{
+			ShowTeamScore:   true,
+			ShowPlayerScore: true,
+		},
+	}
+	c.JSON(http.StatusOK, scorebug)
 }
 
 func SetLiveGame(c *gin.Context) {
